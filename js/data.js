@@ -109,11 +109,6 @@ function refreshSummary() {
 // ============ 下载导入模板 ============
 function downloadTemplate() {
     try {
-        if (typeof XLSX === 'undefined') {
-            showToast('正在加载 XLSX 库，请稍后再试...', true);
-            loadLocalXLSX(function () { downloadTemplate(); });
-            return;
-        }
         var wb = XLSX.utils.book_new();
 
         var snapRows = CITIES.map(function (c) {
@@ -161,27 +156,11 @@ function downloadTemplate() {
     }
 }
 
-// ============ 动态加载本地 XLSX ============
-function loadLocalXLSX(callback) {
-    if (typeof XLSX !== 'undefined') { callback(); return; }
-    var s = document.createElement('script');
-    s.src = 'js/xlsx.full.min.js';
-    s.onload = callback;
-    s.onerror = function () { showToast('XLSX 库加载失败，无法导入/导出', true); };
-    document.head.appendChild(s);
-}
-
 // ============ 导入数据 ============
 function importData(event) {
     try {
         var file = event.target.files[0];
         if (!file) return;
-
-        if (typeof XLSX === 'undefined') {
-            showToast('正在加载 XLSX 库...', false);
-            loadLocalXLSX(function () { importData(event); });
-            return;
-        }
 
         var reader = new FileReader();
         reader.onload = function (e) {
@@ -244,11 +223,6 @@ function importData(event) {
 // ============ 导出数据 ============
 function exportData() {
     try {
-        if (typeof XLSX === 'undefined') {
-            showToast('正在加载 XLSX 库...', false);
-            loadLocalXLSX(exportData);
-            return;
-        }
         var wb = XLSX.utils.book_new();
 
         var snapRows = CITIES.map(function (c) {
