@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>仓储数据大屏 - 智能监控平台</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- 本地化库文件，避免 file:// 协议下 CDN 加载失败 -->
+    <script src="js/chart.umd.min.js"></script>
+    <!-- XLSX 延迟加载，由 data.js 按需加载，避免阻塞 -->
+</head>
+<body>
+    <!-- 背景粒子画布 -->
+    <canvas id="bgCanvas"></canvas>
+
+    <!-- 主容器 -->
+    <div class="dashboard">
+
+        <!-- 顶部标题栏 -->
+        <header class="header">
+            <div class="header-left">
+                <div class="tech-icon">⬡</div>
+                <span class="header-title">仓储数据智能监控大屏</span>
+            </div>
+            <div class="header-center">
+                <div class="header-date" id="headerDate"></div>
+                <div class="header-time" id="headerTime"></div>
+            </div>
+            <div class="header-right">
+                <button class="btn-tech" onclick="downloadTemplate()">⬇ 下载模板</button>
+                <button class="btn-tech btn-orange" onclick="document.getElementById('importFile').click()">📂 导入数据</button>
+                <input type="file" id="importFile" accept=".xlsx,.xls,.csv" style="display:none" onchange="importData(event)">
+                <button class="btn-tech" onclick="exportData()">📥 导出数据</button>
+                <button class="btn-tech" onclick="openManualEdit()">✏ 手动编辑</button>
+            </div>
+        </header>
+
+        <!-- 上部汇总区 -->
+        <section class="summary-bar">
+            <div class="summary-card" id="sumStock">
+                <div class="summary-icon">📦</div>
+                <div class="summary-info">
+                    <div class="summary-label">四地总库存量</div>
+                    <div class="summary-value" id="totalStock">0</div>
+                    <div class="summary-unit">件</div>
+                </div>
+                <div class="summary-trend up" id="trendStock">--</div>
+            </div>
+            <div class="summary-card" id="sumIn">
+                <div class="summary-icon">📥</div>
+                <div class="summary-info">
+                    <div class="summary-label">四地总入库量</div>
+                    <div class="summary-value" id="totalIn">0</div>
+                    <div class="summary-unit">件</div>
+                </div>
+                <div class="summary-trend up" id="trendIn">--</div>
+            </div>
+            <div class="summary-card" id="sumOut">
+                <div class="summary-icon">📤</div>
+                <div class="summary-info">
+                    <div class="summary-label">四地总出库量</div>
+                    <div class="summary-value" id="totalOut">0</div>
+                    <div class="summary-unit">件</div>
+                </div>
+                <div class="summary-trend down" id="trendOut">--</div>
+            </div>
+            <div class="summary-card" id="sumRate">
+                <div class="summary-icon">⚡</div>
+                <div class="summary-info">
+                    <div class="summary-label">平均卸车及时率</div>
+                    <div class="summary-value" id="avgRate">0%</div>
+                    <div class="summary-unit">24H</div>
+                </div>
+                <div class="summary-trend up" id="trendRate">--</div>
+            </div>
+        </section>
+
+        <!-- 中部主内容区 -->
+        <section class="main-content">
+
+            <!-- 左侧面板 -->
+            <div class="panel-left">
+                <div class="panel-title">📊 四地库存概览</div>
+                <div class="city-cards" id="cityCards"></div>
+                <div class="panel-title" style="margin-top:12px">📈 存效与饱和度</div>
+                <div class="saturation-cards" id="saturationCards"></div>
+            </div>
+
+            <!-- 中间图表区 -->
+            <div class="panel-center">
+                <div class="chart-box">
+                    <div class="chart-title">四地出入库趋势图</div>
+                    <div class="chart-container">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-box" style="margin-top:14px">
+                    <div class="chart-title">库容饱和度趋势图</div>
+                    <div class="chart-container">
+                        <canvas id="saturationChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧面板 -->
+            <div class="panel-right">
+                <div class="panel-title">🚛 24H卸车及时率</div>
+                <div class="rate-cards" id="rateCards"></div>
+                <div class="chart-box" style="margin-top:14px">
+                    <div class="chart-title">及时率趋势</div>
+                    <div class="chart-container" style="height:180px">
+                        <canvas id="rateChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 底部面板 -->
+        <section class="bottom-content">
+            <!-- 入库作业峰值上限 -->
+            <div class="bottom-left">
+                <div class="panel-title">🏗 入库作业峰值上限（方）</div>
+                <div class="peak-cards" id="peakCards"></div>
+            </div>
+
+            <!-- 逆向日报 -->
+            <div class="bottom-right">
+                <div class="panel-title">🔄 逆向物流日报（杭州/佛山/济南）</div>
+                <div class="table-wrapper">
+                    <table class="data-table" id="reverseTable">
+                        <thead>
+                            <tr>
+                                <th>地区</th>
+                                <th>前一日破损量</th>
+                                <th>接收总量/台</th>
+                                <th>转正量</th>
+                                <th>待转正量</th>
+                                <th>品质异常</th>
+                                <th>三码全无</th>
+                                <th>单实不符</th>
+                                <th>换包量</th>
+                                <th>当日破损量</th>
+                                <th>占用面积</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reverseBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- 手动编辑弹窗 -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>✏ 手动编辑数据</span>
+                <button class="modal-close" onclick="closeManualEdit()">✕</button>
+            </div>
+            <div class="modal-body" id="editForm"></div>
+            <div class="modal-footer">
+                <button class="btn-tech" onclick="saveManualEdit()">💾 保存</button>
+                <button class="btn-tech" onclick="closeManualEdit()">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS 加载顺序：data → charts → app -->
+    <script src="js/data.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
