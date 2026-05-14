@@ -208,7 +208,7 @@ body {
 }
 
 .kpi-number {
-    font-size: 32px;
+    font-size: 36px;
     font-weight: 800;
     font-family: 'Courier New', monospace;
     color: var(--orange-main);
@@ -217,30 +217,45 @@ body {
 .kpi-mom {
     display: flex;
     flex-direction: column;
+    gap: 4px;
+    align-items: flex-end;
+}
+
+.mom-item {
+    display: flex;
     align-items: center;
+    gap: 4px;
 }
 
 .mom-label {
-    font-size: 10px;
+    font-size: 11px;
     color: var(--text-dim);
+    white-space: nowrap;
 }
 
 .mom-value {
-    font-size: 14px;
-    font-weight: 700;
+    font-size: 20px;
+    font-weight: 800;
     font-family: 'Courier New', monospace;
 }
 
 .mom-value.up { color: var(--red); }
 .mom-value.down { color: var(--green); }
 
+.mom-compare {
+    font-size: 16px;
+    font-weight: 700;
+    font-family: 'Courier New', monospace;
+    color: var(--orange-main);
+}
+
 /* ---------- 第二行主内容区 ---------- */
 .row-main {
     display: grid;
-    grid-template-columns: 280px 1fr 300px;
+    grid-template-columns: 260px 1fr 280px;
     gap: 12px;
     margin-bottom: 12px;
-    min-height: 400px;
+    min-height: 380px;
 }
 
 .panel {
