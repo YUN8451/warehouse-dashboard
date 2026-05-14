@@ -1,7 +1,5 @@
 /* ============================================
-   app.js - 主应用逻辑、UI 刷新、背景动画
-   （formatNum / animateValue 已移至 data.js，
-    本文件只保留 app 专属逻辑）
+   app.js - 主应用逻辑、时钟、背景动画
    ============================================ */
 
 // ============ 时钟更新 ============
@@ -16,12 +14,11 @@ function updateClock() {
     if (timeEl) timeEl.textContent = timeStr;
 }
 
-// ============ 统一刷新入口 ============
+// ============ 统一刷新入口（覆盖 data.js 的同名函数）============
 function refreshAll() {
-    if (typeof refreshSummary === 'function') refreshSummary();
+    if (typeof refreshKPI === 'function') refreshKPI();
+    if (typeof refreshMetrics === 'function') refreshMetrics();
     if (typeof refreshCityCards === 'function') refreshCityCards();
-    if (typeof refreshSaturationCards === 'function') refreshSaturationCards();
-    if (typeof refreshRateCards === 'function') refreshRateCards();
     if (typeof refreshPeakCards === 'function') refreshPeakCards();
     if (typeof refreshReverseTable === 'function') refreshReverseTable();
     if (typeof refreshCharts === 'function') refreshCharts();
@@ -34,7 +31,7 @@ function initBgCanvas() {
     var ctx = canvas.getContext('2d');
     var w, h;
     var particles = [];
-    var PARTICLE_COUNT = 50;
+    var PARTICLE_COUNT = 40;
 
     function resize() {
         w = canvas.width = window.innerWidth;
@@ -49,7 +46,7 @@ function initBgCanvas() {
         this.size = Math.random() * 1.5 + 0.5;
         this.speedX = (Math.random() - 0.5) * 0.3;
         this.speedY = (Math.random() - 0.5) * 0.3;
-        this.opacity = Math.random() * 0.4 + 0.1;
+        this.opacity = Math.random() * 0.3 + 0.1;
     }
     Particle.prototype.update = function () {
         this.x += this.speedX;
@@ -62,7 +59,7 @@ function initBgCanvas() {
     Particle.prototype.draw = function () {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(255, 140, 51, ' + this.opacity + ')';
+        ctx.fillStyle = 'rgba(255,150,50,' + this.opacity + ')';
         ctx.fill();
     };
 
@@ -79,7 +76,7 @@ function initBgCanvas() {
                     ctx.beginPath();
                     ctx.moveTo(particles[i].x, particles[i].y);
                     ctx.lineTo(particles[j].x, particles[j].y);
-                    ctx.strokeStyle = 'rgba(255, 107, 0, ' + (0.08 * (1 - dist / 160)) + ')';
+                    ctx.strokeStyle = 'rgba(255,150,50,' + (0.1 * (1 - dist / 160)) + ')';
                     ctx.lineWidth = 0.5;
                     ctx.stroke();
                 }
@@ -96,6 +93,5 @@ document.addEventListener('DOMContentLoaded', function () {
     updateClock();
     setInterval(updateClock, 1000);
     initBgCanvas();
-    // 等待所有脚本加载完毕后再刷新
-    setTimeout(function () { refreshAll(); }, 100);
+    setTimeout(function () { refreshAll(); }, 200);
 });
