@@ -1,51 +1,41 @@
 /* ============================================
-   仓储数据大屏 - 科技智能风格样式（橙色系）
+   仓储数据大屏 - 白色主题样式
    ============================================ */
 
 /* ---------- CSS 变量 ---------- */
 :root {
-    --bg-dark: #0a0e1a;
-    --bg-card: rgba(15, 20, 40, 0.85);
-    --bg-card-hover: rgba(20, 28, 58, 0.95);
+    --bg-body: #f5f7fa;
+    --bg-card: #ffffff;
+    --bg-card-hover: #fafbfd;
     --orange-main: #ff6b00;
     --orange-light: #ff8c33;
-    --orange-glow: rgba(255, 107, 0, 0.4);
-    --orange-dim: rgba(255, 107, 0, 0.15);
-    --text-main: #e8eaf0;
-    --text-dim: #8892a8;
-    --text-bright: #ffffff;
-    --border-color: rgba(255, 107, 0, 0.25);
-    --green: #00e676;
-    --red: #ff5252;
-    --blue: #448aff;
+    --orange-glow: rgba(255,107,0,0.15);
+    --orange-dim: rgba(255,107,0,0.08);
+    --text-main: #1a1a2e;
+    --text-dim: #6b7280;
+    --text-right: #1a1a2e;
+    --border-color: #e2e8f0;
+    --green: #00b578;
+    --red: #f53f3f;
+    --blue: #3b82f6;
     --radius: 10px;
-    --shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+    --shadow: 0 2px 12px rgba(0,0,0,0.06);
+    --shadow-hover: 0 6px 24px rgba(0,0,0,0.1);
 }
 
 /* ---------- 重置 & 基础 ---------- */
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* { margin:0; padding:0; box-sizing:border-box; }
 
 body {
     font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
-    background: var(--bg-dark);
+    background: var(--bg-body);
     color: var(--text-main);
     min-height: 100vh;
     overflow-x: hidden;
 }
 
-/* ---------- 背景画布 ---------- */
-#bgCanvas {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    z-index: 0;
-    pointer-events: none;
-}
-
 /* ---------- 主容器 ---------- */
 .dashboard {
-    position: relative;
-    z-index: 1;
     max-width: 1920px;
     margin: 0 auto;
     padding: 12px 16px 16px;
@@ -58,11 +48,11 @@ body {
     align-items: center;
     justify-content: space-between;
     padding: 10px 24px;
-    background: linear-gradient(90deg, rgba(255,107,0,0.12) 0%, rgba(15,20,40,0.9) 40%, rgba(15,20,40,0.9) 60%, rgba(255,107,0,0.12) 100%);
+    background: linear-gradient(90deg, #fff 0%, #fff 100%);
     border: 1px solid var(--border-color);
     border-radius: var(--radius);
     margin-bottom: 12px;
-    box-shadow: 0 0 20px rgba(255,107,0,0.08);
+    box-shadow: 0 1px 8px rgba(255,107,0,0.08);
 }
 
 .header-left {
@@ -74,22 +64,19 @@ body {
 .tech-icon {
     font-size: 28px;
     color: var(--orange-main);
-    text-shadow: 0 0 12px var(--orange-glow);
     animation: pulse-icon 2s ease-in-out infinite;
 }
 
 @keyframes pulse-icon {
-    0%,100% { text-shadow: 0 0 12px rgba(255,107,0,0.4); }
-    50% { text-shadow: 0 0 24px rgba(255,107,0,0.8); }
+    0%,100% { text-shadow: 0 0 8px rgba(255,107,0,0.3); }
+    50% { text-shadow: 0 0 20px rgba(255,107,0,0.6); }
 }
 
 .header-title {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 700;
-    background: linear-gradient(90deg, var(--orange-main), var(--orange-light));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    letter-spacing: 3px;
+    color: var(--text-main);
+    letter-spacing: 2px;
 }
 
 .header-center {
@@ -102,11 +89,10 @@ body {
 }
 
 .header-time {
-    font-size: 26px;
+    font-size: 24px;
     font-weight: 700;
     font-family: 'Courier New', monospace;
     color: var(--orange-main);
-    text-shadow: 0 0 10px var(--orange-glow);
 }
 
 .header-right {
@@ -117,20 +103,21 @@ body {
 /* ---------- 按钮样式 ---------- */
 .btn-tech {
     padding: 7px 16px;
-    background: rgba(255,107,0,0.12);
+    background: var(--orange-dim);
     border: 1px solid var(--border-color);
     border-radius: 6px;
-    color: var(--orange-light);
+    color: var(--orange-main);
     font-size: 13px;
     cursor: pointer;
     transition: all 0.25s;
     white-space: nowrap;
+    font-weight: 500;
 }
 
 .btn-tech:hover {
-    background: rgba(255,107,0,0.25);
+    background: var(--orange-glow);
     box-shadow: 0 0 12px var(--orange-glow);
-    color: var(--text-bright);
+    color: var(--text-right);
 }
 
 .btn-orange {
@@ -144,29 +131,26 @@ body {
     box-shadow: 0 0 20px var(--orange-glow);
 }
 
-/* ---------- 上部汇总栏 ---------- */
-.summary-bar {
+/* ---------- 第一行 KPI 卡片 ---------- */
+.row-kpi {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 12px;
     margin-bottom: 12px;
 }
 
-.summary-card {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 16px 20px;
+.kpi-card {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: var(--radius);
+    padding: 16px 20px;
     box-shadow: var(--shadow);
     transition: all 0.3s;
     position: relative;
     overflow: hidden;
 }
 
-.summary-card::before {
+.kpi-card::before {
     content: '';
     position: absolute;
     top: 0; left: 0;
@@ -174,68 +158,92 @@ body {
     background: linear-gradient(180deg, var(--orange-main), transparent);
 }
 
-.summary-card:hover {
+.kpi-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 30px rgba(255,107,0,0.15);
+    box-shadow: var(--shadow-hover);
     border-color: var(--orange-main);
 }
 
-.summary-icon {
-    font-size: 36px;
-    filter: drop-shadow(0 0 6px var(--orange-glow));
-}
-
-.summary-info {
-    flex: 1;
-}
-
-.summary-label {
+.kpi-label {
     font-size: 13px;
     color: var(--text-dim);
     margin-bottom: 4px;
 }
 
-.summary-value {
-    font-size: 32px;
+.kpi-value {
+    font-size: 36px;
     font-weight: 800;
     font-family: 'Courier New', monospace;
-    color: var(--text-bright);
-    text-shadow: 0 0 10px rgba(255,255,255,0.1);
+    color: var(--text-right);
     line-height: 1.1;
 }
 
-.summary-unit {
+.kpi-unit {
     font-size: 12px;
     color: var(--text-dim);
 }
 
-.summary-trend {
-    font-size: 13px;
+.kpi-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.kpi-title {
+    font-size: 14px;
     font-weight: 600;
-    padding: 3px 10px;
-    border-radius: 20px;
+    color: var(--text-dim);
 }
 
-.summary-trend.up {
-    color: var(--green);
-    background: rgba(0,230,118,0.1);
+.kpi-sub {
+    font-size: 11px;
+    color: var(--text-dim);
 }
 
-.summary-trend.down {
-    color: var(--red);
-    background: rgba(255,82,82,0.1);
+.kpi-body {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
 }
 
-/* ---------- 中部主内容区 ---------- */
-.main-content {
+.kpi-number {
+    font-size: 32px;
+    font-weight: 800;
+    font-family: 'Courier New', monospace;
+    color: var(--orange-main);
+}
+
+.kpi-mom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.mom-label {
+    font-size: 10px;
+    color: var(--text-dim);
+}
+
+.mom-value {
+    font-size: 14px;
+    font-weight: 700;
+    font-family: 'Courier New', monospace;
+}
+
+.mom-value.up { color: var(--red); }
+.mom-value.down { color: var(--green); }
+
+/* ---------- 第二行主内容区 ---------- */
+.row-main {
     display: grid;
-    grid-template-columns: 300px 1fr 320px;
+    grid-template-columns: 280px 1fr 300px;
     gap: 12px;
     margin-bottom: 12px;
-    min-height: 420px;
+    min-height: 400px;
 }
 
-.panel-left, .panel-center, .panel-right {
+.panel {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: var(--radius);
@@ -246,9 +254,9 @@ body {
 .panel-title {
     font-size: 14px;
     font-weight: 600;
-    color: var(--orange-light);
+    color: var(--orange-main);
     padding-bottom: 8px;
-    border-bottom: 1px solid rgba(255,107,0,0.2);
+    border-bottom: 1px solid var(--orange-dim);
     margin-bottom: 10px;
     letter-spacing: 1px;
 }
@@ -258,20 +266,18 @@ body {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin-bottom: 4px;
 }
 
 .city-card {
     padding: 10px 12px;
-    background: rgba(255,107,0,0.06);
-    border: 1px solid rgba(255,107,0,0.15);
+    background: var(--orange-dim);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     transition: all 0.25s;
-    cursor: default;
 }
 
 .city-card:hover {
-    background: rgba(255,107,0,0.12);
+    background: var(--orange-glow);
     border-color: var(--orange-main);
 }
 
@@ -285,7 +291,7 @@ body {
 .city-name {
     font-size: 14px;
     font-weight: 700;
-    color: var(--orange-light);
+    color: var(--orange-main);
 }
 
 .city-tag {
@@ -295,9 +301,9 @@ body {
     font-weight: 600;
 }
 
-.tag-normal { background: rgba(68,138,255,0.15); color: var(--blue); }
-.tag-warn { background: rgba(255,82,82,0.15); color: var(--red); }
-.tag-full { background: rgba(255,107,0,0.2); color: var(--orange-main); }
+.tag-normal { background: rgba(59,130,246,0.1); color: var(--blue); }
+.tag-warn { background: rgba(245,63,63,0.1); color: var(--red); }
+.tag-full { background: rgba(255,107,0,0.12); color: var(--orange-main); }
 
 .city-metrics {
     display: grid;
@@ -318,67 +324,12 @@ body {
     font-size: 15px;
     font-weight: 700;
     font-family: 'Courier New', monospace;
-    color: var(--text-bright);
+    color: var(--text-right);
 }
 
 .metric-value.stock { color: var(--orange-light); }
 .metric-value.in { color: var(--green); }
 .metric-value.out { color: var(--blue); }
-
-/* ---------- 饱和度卡片 ---------- */
-.saturation-cards {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.sat-card {
-    padding: 8px 12px;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.06);
-    border-radius: 8px;
-}
-
-.sat-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 4px;
-}
-
-.sat-city {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-main);
-}
-
-.sat-value {
-    font-size: 12px;
-    font-weight: 700;
-    font-family: 'Courier New', monospace;
-}
-
-.sat-bar-bg {
-    width: 100%;
-    height: 6px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 3px;
-    overflow: hidden;
-}
-
-.sat-bar-fill {
-    height: 100%;
-    border-radius: 3px;
-    transition: width 0.6s ease;
-}
-
-.sat-info {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 3px;
-    font-size: 10px;
-    color: var(--text-dim);
-}
 
 /* ---------- 中间图表区 ---------- */
 .panel-center {
@@ -387,77 +338,103 @@ body {
     padding: 14px;
 }
 
-.chart-box {
-    flex: 1;
+.chart-tabs {
     display: flex;
-    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 10px;
 }
 
-.chart-title {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--orange-light);
-    margin-bottom: 8px;
-    letter-spacing: 1px;
+.chart-tab {
+    padding: 5px 14px;
+    background: var(--orange-dim);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-dim);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.chart-tab.active {
+    background: var(--orange-main);
+    color: #fff;
+    border-color: var(--orange-main);
+}
+
+.chart-tab:hover:not(.active) {
+    background: var(--orange-glow);
 }
 
 .chart-container {
     flex: 1;
     position: relative;
-    min-height: 180px;
+    min-height: 280px;
 }
 
-/* ---------- 右侧面板 ---------- */
-.rate-cards {
+/* ---------- 右侧：运营指标 ---------- */
+.metric-grid {
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-.rate-card {
+.metric-card {
     padding: 10px 12px;
-    background: rgba(255,107,0,0.06);
-    border: 1px solid rgba(255,107,0,0.15);
+    background: var(--orange-dim);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
-    text-align: center;
     transition: all 0.25s;
 }
 
-.rate-card:hover {
+.metric-card:hover {
     border-color: var(--orange-main);
-    background: rgba(255,107,0,0.12);
 }
 
-.rate-city {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--orange-light);
+.metric-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 4px;
 }
 
-.rate-value {
-    font-size: 28px;
-    font-weight: 800;
-    font-family: 'Courier New', monospace;
-}
-
-.rate-value.good { color: var(--green); }
-.rate-value.mid { color: var(--orange-main); }
-.rate-value.bad { color: var(--red); }
-
-.rate-label {
-    font-size: 10px;
+.metric-card-title {
+    font-size: 12px;
+    font-weight: 600;
     color: var(--text-dim);
 }
 
-/* ---------- 底部内容区 ---------- */
-.bottom-content {
+.metric-card-badge {
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.badge-up { background: rgba(0,181,120,0.1); color: var(--green); }
+.badge-down { background: rgba(245,63,63,0.1); color: var(--red); }
+.badge-flat { background: rgba(107,114,128,0.1); color: var(--text-dim); }
+
+.metric-card-value {
+    font-size: 22px;
+    font-weight: 800;
+    font-family: 'Courier New', monospace;
+    color: var(--text-right);
+}
+
+.metric-card-sub {
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 2px;
+}
+
+/* ---------- 第三行：入库峰值 + 逆向日报 ---------- */
+.row-bottom {
     display: grid;
     grid-template-columns: 1fr 1.6fr;
     gap: 12px;
 }
 
-.bottom-left, .bottom-right {
+.panel-peak, .panel-reverse {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: var(--radius);
@@ -475,8 +452,8 @@ body {
 .peak-card {
     text-align: center;
     padding: 14px 8px;
-    background: rgba(255,107,0,0.06);
-    border: 1px solid rgba(255,107,0,0.18);
+    background: var(--orange-dim);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     transition: all 0.3s;
 }
@@ -489,16 +466,15 @@ body {
 .peak-city {
     font-size: 13px;
     font-weight: 700;
-    color: var(--orange-light);
+    color: var(--orange-main);
     margin-bottom: 6px;
 }
 
 .peak-value {
-    font-size: 30px;
+    font-size: 28px;
     font-weight: 800;
     font-family: 'Courier New', monospace;
-    color: var(--text-bright);
-    text-shadow: 0 0 8px rgba(255,255,255,0.1);
+    color: var(--text-right);
 }
 
 .peak-unit {
@@ -511,7 +487,7 @@ body {
     width: 80%;
     margin: 8px auto 0;
     height: 5px;
-    background: rgba(255,255,255,0.08);
+    background: var(--orange-dim);
     border-radius: 3px;
     overflow: hidden;
 }
@@ -537,8 +513,8 @@ body {
 }
 
 .data-table th {
-    background: rgba(255,107,0,0.15);
-    color: var(--orange-light);
+    background: var(--orange-dim);
+    color: var(--orange-main);
     padding: 8px 10px;
     text-align: center;
     font-weight: 600;
@@ -546,22 +522,23 @@ body {
     top: 0;
     z-index: 2;
     white-space: nowrap;
+    border-bottom: 2px solid var(--orange-main);
 }
 
 .data-table td {
     padding: 7px 10px;
     text-align: center;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 1px solid var(--border-color);
     color: var(--text-main);
     white-space: nowrap;
 }
 
 .data-table tbody tr:hover {
-    background: rgba(255,107,0,0.08);
+    background: var(--orange-dim);
 }
 
 .data-table tbody tr:nth-child(even) {
-    background: rgba(255,255,255,0.02);
+    background: var(--bg-body);
 }
 
 /* ---------- 弹窗 ---------- */
@@ -570,7 +547,7 @@ body {
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background: rgba(0,0,0,0.7);
+    background: rgba(0,0,0,0.5);
     z-index: 1000;
     justify-content: center;
     align-items: center;
@@ -581,7 +558,7 @@ body {
 }
 
 .modal-content {
-    background: #121828;
+    background: var(--bg-card);
     border: 1px solid var(--orange-main);
     border-radius: 12px;
     width: 90%;
@@ -599,7 +576,7 @@ body {
     border-bottom: 1px solid var(--border-color);
     font-size: 16px;
     font-weight: 700;
-    color: var(--orange-light);
+    color: var(--orange-main);
 }
 
 .modal-close {
@@ -633,7 +610,7 @@ body {
 .edit-section-title {
     font-size: 14px;
     font-weight: 700;
-    color: var(--orange-light);
+    color: var(--orange-main);
     margin-bottom: 10px;
     padding-left: 8px;
     border-left: 3px solid var(--orange-main);
@@ -658,10 +635,10 @@ body {
 
 .edit-field input, .edit-field select {
     padding: 6px 10px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,107,0,0.2);
+    background: var(--bg-body);
+    border: 1px solid var(--border-color);
     border-radius: 6px;
-    color: var(--text-bright);
+    color: var(--text-right);
     font-size: 13px;
     font-family: 'Courier New', monospace;
     outline: none;
@@ -675,24 +652,24 @@ body {
 
 /* ---------- 滚动条 ---------- */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: rgba(255,255,255,0.03); }
+::-webkit-scrollbar-track { background: var(--bg-body); }
 ::-webkit-scrollbar-thumb { background: rgba(255,107,0,0.3); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: rgba(255,107,0,0.5); }
 
 /* ---------- 动画 ---------- */
 @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { opacity:0; transform: translateY(16px); }
+    to { opacity:1; transform: translateY(0); }
 }
 
-.summary-card, .city-card, .rate-card, .peak-card {
+.kpi-card, .city-card, .metric-card, .peak-card {
     animation: fadeInUp 0.5s ease forwards;
 }
 
-.summary-card:nth-child(1) { animation-delay: 0.05s; }
-.summary-card:nth-child(2) { animation-delay: 0.1s; }
-.summary-card:nth-child(3) { animation-delay: 0.15s; }
-.summary-card:nth-child(4) { animation-delay: 0.2s; }
+.kpi-card:nth-child(1) { animation-delay: 0.05s; }
+.kpi-card:nth-child(2) { animation-delay: 0.1s; }
+.kpi-card:nth-child(3) { animation-delay: 0.15s; }
+.kpi-card:nth-child(4) { animation-delay: 0.2s; }
 
 /* ---------- 数字变化动画 ---------- */
 .value-change {
@@ -700,25 +677,25 @@ body {
 }
 
 @keyframes valueFlash {
-    0% { text-shadow: 0 0 10px var(--orange-glow); }
+    0% { text-shadow: 0 0 10px rgba(255,107,0,0.4); }
     100% { text-shadow: none; }
 }
 
 /* ---------- 响应式 ---------- */
 @media (max-width: 1400px) {
-    .main-content {
-        grid-template-columns: 260px 1fr 280px;
+    .row-main {
+        grid-template-columns: 240px 1fr 260px;
     }
 }
 
 @media (max-width: 1100px) {
-    .main-content {
+    .row-main {
         grid-template-columns: 1fr;
     }
-    .summary-bar {
+    .row-kpi {
         grid-template-columns: repeat(2, 1fr);
     }
-    .bottom-content {
+    .row-bottom {
         grid-template-columns: 1fr;
     }
     .peak-cards {
