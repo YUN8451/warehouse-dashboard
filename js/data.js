@@ -37,10 +37,13 @@ var warehouseData = {
         safety: 0,                 // 安全运营（起）
         inboundVolume: 3.2,           // 入库量（万台）
         inboundMoM: 5.2,            // 入库量环比（%）
+        inboundCompare: 3.0,          // 入库量同期（万台）
         outboundVolume: 2.8,          // 出库量（万台）
         outboundMoM: -3.1,           // 出库量环比（%）
+        outboundCompare: 2.9,        // 出库量同期（万台）
         throughput: 6.0,             // 吞吐量（万台）
-        throughputMoM: 1.8            // 吞吐量环比（%）
+        throughputMoM: 1.8,          // 吞吐量环比（%）
+        throughputCompare: 5.8        // 吞吐量同期（万台）
     },
 
     // 四地快照
@@ -126,10 +129,13 @@ function refreshKPI() {
     animateValue('inboundVolume', Math.round(k.inboundVolume * 10000));
     var el;
     el = document.getElementById('inboundMoM'); if (el) el.outerHTML = momHtml(k.inboundMoM);
+    el = document.getElementById('inboundCompare'); if (el) el.textContent = formatNum(Math.round(k.inboundCompare * 10000));
     el = document.getElementById('outboundVolume'); if (el) animateValue('outboundVolume', Math.round(k.outboundVolume * 10000));
     el = document.getElementById('outboundMoM'); if (el) el.outerHTML = momHtml(k.outboundMoM);
+    el = document.getElementById('outboundCompare'); if (el) el.textContent = formatNum(Math.round(k.outboundCompare * 10000));
     el = document.getElementById('throughputVolume'); if (el) animateValue('throughputVolume', Math.round(k.throughput * 10000));
     el = document.getElementById('throughputMoM'); if (el) el.outerHTML = momHtml(k.throughputMoM);
+    el = document.getElementById('throughputCompare'); if (el) el.textContent = formatNum(Math.round(k.throughputCompare * 10000));
 }
 
 // ============ 刷新运营指标卡片 ============
@@ -240,13 +246,16 @@ function downloadTemplate() {
             '安全运营(起)': warehouseData.kpi.safety,
             '入库量(万台)': warehouseData.kpi.inboundVolume,
             '入库量环比(%)': warehouseData.kpi.inboundMoM,
+            '入库量同期(万台)': warehouseData.kpi.inboundCompare,
             '出库量(万台)': warehouseData.kpi.outboundVolume,
             '出库量环比(%)': warehouseData.kpi.outboundMoM,
+            '出库量同期(万台)': warehouseData.kpi.outboundCompare,
             '吞吐量(万台)': warehouseData.kpi.throughput,
-            '吞吐量环比(%)': warehouseData.kpi.throughputMoM
+            '吞吐量环比(%)': warehouseData.kpi.throughputMoM,
+            '吞吐量同期(万台)': warehouseData.kpi.throughputCompare
         }];
         var ws1 = XLSX.utils.json_to_sheet(kpiRows);
-        ws1['!cols'] = [{ wch: 14 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 }, { wch: 12 }];
+        ws1['!cols'] = [{ wch: 14 }, { wch: 12 }, { wch: 12 }, { wch: 14 }, { wch: 12 }, { wch: 12 }, { wch: 14 }, { wch: 12 }, { wch: 12 }, { wch: 14 }];
         XLSX.utils.book_append_sheet(wb, ws1, 'KPI指标');
 
         // Sheet2：运营指标
@@ -318,10 +327,13 @@ function importData(event) {
                         if (k['安全运营(起)'] !== undefined) warehouseData.kpi.safety = Number(k['安全运营(起)']);
                         if (k['入库量(万台)'] !== undefined) warehouseData.kpi.inboundVolume = Number(k['入库量(万台)']);
                         if (k['入库量环比(%)'] !== undefined) warehouseData.kpi.inboundMoM = Number(k['入库量环比(%)']);
+                        if (k['入库量同期(万台)'] !== undefined) warehouseData.kpi.inboundCompare = Number(k['入库量同期(万台)']);
                         if (k['出库量(万台)'] !== undefined) warehouseData.kpi.outboundVolume = Number(k['出库量(万台)']);
                         if (k['出库量环比(%)'] !== undefined) warehouseData.kpi.outboundMoM = Number(k['出库量环比(%)']);
+                        if (k['出库量同期(万台)'] !== undefined) warehouseData.kpi.outboundCompare = Number(k['出库量同期(万台)']);
                         if (k['吞吐量(万台)'] !== undefined) warehouseData.kpi.throughput = Number(k['吞吐量(万台)']);
                         if (k['吞吐量环比(%)'] !== undefined) warehouseData.kpi.throughputMoM = Number(k['吞吐量环比(%)']);
+                        if (k['吞吐量同期(万台)'] !== undefined) warehouseData.kpi.throughputCompare = Number(k['吞吐量同期(万台)']);
                     }
                 }
 
@@ -409,7 +421,7 @@ function exportData() {
     try {
         var wb = XLSX.utils.book_new();
 
-        var kpiRows = [{ '安全运营(起)': warehouseData.kpi.safety, '入库量(万台)': warehouseData.kpi.inboundVolume, '入库量环比(%)': warehouseData.kpi.inboundMoM, '出库量(万台)': warehouseData.kpi.outboundVolume, '出库量环比(%)': warehouseData.kpi.outboundMoM, '吞吐量(万台)': warehouseData.kpi.throughput, '吞吐量环比(%)': warehouseData.kpi.throughputMoM }];
+        var kpiRows = [{ '安全运营(起)': warehouseData.kpi.safety, '入库量(万台)': warehouseData.kpi.inboundVolume, '入库量环比(%)': warehouseData.kpi.inboundMoM, '入库量同期(万台)': warehouseData.kpi.inboundCompare, '出库量(万台)': warehouseData.kpi.outboundVolume, '出库量环比(%)': warehouseData.kpi.outboundMoM, '出库量同期(万台)': warehouseData.kpi.outboundCompare, '吞吐量(万台)': warehouseData.kpi.throughput, '吞吐量环比(%)': warehouseData.kpi.throughputMoM, '吞吐量同期(万台)': warehouseData.kpi.throughputCompare }];
         var ws1 = XLSX.utils.json_to_sheet(kpiRows);
         XLSX.utils.book_append_sheet(wb, ws1, 'KPI指标');
 
@@ -460,10 +472,13 @@ function openManualEdit() {
         html += editInputKPI('safety', '安全运营(起)', warehouseData.kpi.safety);
         html += editInputKPI('inboundVolume', '入库量(万台)', warehouseData.kpi.inboundVolume);
         html += editInputKPI('inboundMoM', '入库量环比(%)', warehouseData.kpi.inboundMoM);
+        html += editInputKPI('inboundCompare', '入库量同期(万台)', warehouseData.kpi.inboundCompare);
         html += editInputKPI('outboundVolume', '出库量(万台)', warehouseData.kpi.outboundVolume);
         html += editInputKPI('outboundMoM', '出库量环比(%)', warehouseData.kpi.outboundMoM);
+        html += editInputKPI('outboundCompare', '出库量同期(万台)', warehouseData.kpi.outboundCompare);
         html += editInputKPI('throughput', '吞吐量(万台)', warehouseData.kpi.throughput);
         html += editInputKPI('throughputMoM', '吞吐量环比(%)', warehouseData.kpi.throughputMoM);
+        html += editInputKPI('throughputCompare', '吞吐量同期(万台)', warehouseData.kpi.throughputCompare);
         html += '</div></div>';
 
         // 运营指标编辑
@@ -553,10 +568,13 @@ function saveManualEdit() {
         el = document.getElementById('edit_kpi_safety'); if (el) warehouseData.kpi.safety = Number(el.value);
         el = document.getElementById('edit_kpi_inboundVolume'); if (el) warehouseData.kpi.inboundVolume = Number(el.value);
         el = document.getElementById('edit_kpi_inboundMoM'); if (el) warehouseData.kpi.inboundMoM = Number(el.value);
+        el = document.getElementById('edit_kpi_inboundCompare'); if (el) warehouseData.kpi.inboundCompare = Number(el.value);
         el = document.getElementById('edit_kpi_outboundVolume'); if (el) warehouseData.kpi.outboundVolume = Number(el.value);
         el = document.getElementById('edit_kpi_outboundMoM'); if (el) warehouseData.kpi.outboundMoM = Number(el.value);
+        el = document.getElementById('edit_kpi_outboundCompare'); if (el) warehouseData.kpi.outboundCompare = Number(el.value);
         el = document.getElementById('edit_kpi_throughput'); if (el) warehouseData.kpi.throughput = Number(el.value);
         el = document.getElementById('edit_kpi_throughputMoM'); if (el) warehouseData.kpi.throughputMoM = Number(el.value);
+        el = document.getElementById('edit_kpi_throughputCompare'); if (el) warehouseData.kpi.throughputCompare = Number(el.value);
 
         // 保存运营指标
         el = document.getElementById('edit_metric_turnoverDays_current'); if (el) warehouseData.metrics.turnoverDays.current = Number(el.value);
