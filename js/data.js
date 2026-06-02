@@ -64,9 +64,10 @@ var warehouseData = {
 
     // 逆向物流看板
     reverse: {
-        杭州: { receiveTotal: 8940, '转正量': 8750, '待转正量': 190, '京东呆滞退': 0, '京东在途退': 0, '菜鸟呆滞退': 0, '菜鸟在途退': 0, '2C呆滞退': 0, '2C在途退': 0, '经销商退': 0, 'KA退': 0, '换包量': 22, areaUsage: 3200 },
-        佛山: { receiveTotal: 7510, '转正量': 7380, '待转正量': 130, '京东呆滞退': 0, '京东在途退': 0, '菜鸟呆滞退': 0, '菜鸟在途退': 0, '2C呆滞退': 0, '2C在途退': 0, '经销商退': 0, 'KA退': 0, '换包量': 15, areaUsage: 2800 },
-        济南: { receiveTotal: 6820, '转正量': 6700, '待转正量': 120, '京东呆滞退': 0, '京东在途退': 0, '菜鸟呆滞退': 0, '菜鸟在途退': 0, '2C呆滞退': 0, '2C在途退': 0, '经销商退': 0, 'KA退': 0, '换包量': 18, areaUsage: 2500 }
+        杭州: { '上月结存': 0, receiveTotal: 8940, '转正量': 8750, '待转正量': 190, '京东呆滞退': 0, '京东在途退': 0, '菜鸟呆滞退': 0, '菜鸟在途退': 0, '2C呆滞退': 0, '2C在途退': 0, '经销商退': 0, 'KA退': 0, '换包量': 22, '本月结存': 0, areaUsage: 3200 },
+        上虞: { '上月结存': 0, receiveTotal: 0, '转正量': 0, '待转正量': 0, '京东呆滞退': 0, '京东在途退': 0, '菜鸟呆滞退': 0, '菜鸟在途退': 0, '2C呆滞退': 0, '2C在途退': 0, '经销商退': 0, 'KA退': 0, '换包量': 0, '本月结存': 0, areaUsage: 0 },
+        佛山: { '上月结存': 0, receiveTotal: 7510, '转正量': 7380, '待转正量': 130, '京东呆滞退': 0, '京东在途退': 0, '菜鸟呆滞退': 0, '菜鸟在途退': 0, '2C呆滞退': 0, '2C在途退': 0, '经销商退': 0, 'KA退': 0, '换包量': 15, '本月结存': 0, areaUsage: 2800 },
+        济南: { '上月结存': 0, receiveTotal: 6820, '转正量': 6700, '待转正量': 120, '京东呆滞退': 0, '京东在途退': 0, '菜鸟呆滞退': 0, '菜鸟在途退': 0, '2C呆滞退': 0, '2C在途退': 0, '经销商退': 0, 'KA退': 0, '换包量': 18, '本月结存': 0, areaUsage: 2500 }
     },
 
     history: {
@@ -243,6 +244,7 @@ function refreshReverseTable() {
     tbody.innerHTML = Object.entries(warehouseData.reverse).map(function (entry) {
         var city = entry[0], d = entry[1];
         return '<tr><td style="font-weight:700;color:var(--orange-light)">' + city + '</td>' +
+            '<td>' + d['上月结存'] + '</td>' +
             '<td>' + d.receiveTotal + '</td>' +
             '<td>' + d['转正量'] + '</td>' +
             '<td>' + d['待转正量'] + '</td>' +
@@ -255,6 +257,7 @@ function refreshReverseTable() {
             '<td>' + d['经销商退'] + '</td>' +
             '<td>' + d['KA退'] + '</td>' +
             '<td>' + d['换包量'] + '</td>' +
+            '<td>' + d['本月结存'] + '</td>' +
             '<td>' + d.areaUsage + '</td></tr>';
     }).join('');
 }
@@ -322,12 +325,12 @@ function downloadTemplate() {
         var revRows = Object.entries(warehouseData.reverse).map(function (entry) {
             var city = entry[0], d = entry[1];
             return {
-                '地区': city, '接收总量/台': d.receiveTotal, '转正量': d['转正量'], '待转正量': d['待转正量'],
+                '地区': city, '上月结存': d['上月结存'], '接收总量/台': d.receiveTotal, '转正量': d['转正量'], '待转正量': d['待转正量'],
                 '京东呆滞退': d['京东呆滞退'], '京东在途退': d['京东在途退'],
                 '菜鸟呆滞退': d['菜鸟呆滞退'], '菜鸟在途退': d['菜鸟在途退'],
                 '2C呆滞退': d['2C呆滞退'], '2C在途退': d['2C在途退'],
                 '经销商退': d['经销商退'], 'KA退': d['KA退'],
-                '换包量': d['换包量'], '占用面积': d.areaUsage
+                '换包量': d['换包量'], '本月结存': d['本月结存'], '占用面积': d.areaUsage
             };
         });
         var ws4 = XLSX.utils.json_to_sheet(revRows);
@@ -437,6 +440,8 @@ function importData(event) {
                         if (row['经销商退'] !== undefined) rev['经销商退'] = Number(row['经销商退']);
                         if (row['KA退'] !== undefined) rev['KA退'] = Number(row['KA退']);
                         if (row['换包量'] !== undefined) rev['换包量'] = Number(row['换包量']);
+                        if (row['上月结存'] !== undefined) rev['上月结存'] = Number(row['上月结存']);
+                        if (row['本月结存'] !== undefined) rev['本月结存'] = Number(row['本月结存']);
                         if (row['占用面积'] !== undefined) rev.areaUsage = Number(row['占用面积']);
                     });
                 }
@@ -558,6 +563,7 @@ function openManualEdit() {
             var city = entry[0], d = entry[1];
             html += '<div style="border:1px solid var(--border-color);border-radius:8px;padding:10px;margin-bottom:8px;">';
             html += '<div style="color:var(--orange-main);font-weight:700;margin-bottom:6px;">&#x1F504; ' + city + '</div>';
+            html += editInputRev(city, '上月结存', '上月结存', d['上月结存']);
             html += editInputRev(city, 'receiveTotal', '接收总量/台', d.receiveTotal);
             html += editInputRev(city, '转正量', '转正量', d['转正量']);
             html += editInputRev(city, '待转正量', '待转正量', d['待转正量']);
@@ -570,6 +576,7 @@ function openManualEdit() {
             html += editInputRev(city, '经销商退', '经销商退', d['经销商退']);
             html += editInputRev(city, 'KA退', 'KA退', d['KA退']);
             html += editInputRev(city, '换包量', '换包量', d['换包量']);
+            html += editInputRev(city, '本月结存', '本月结存', d['本月结存']);
             html += editInputRev(city, 'areaUsage', '占用面积', d.areaUsage);
             html += '</div>';
         });
@@ -644,6 +651,7 @@ function saveManualEdit() {
         // 保存逆向物流看板
         Object.entries(warehouseData.reverse).forEach(function (entry) {
             var city = entry[0], d = entry[1];
+            el = document.getElementById('edit_rev_' + city + '_上月结存'); if (el) d['上月结存'] = Number(el.value);
             el = document.getElementById('edit_rev_' + city + '_receiveTotal'); if (el) d.receiveTotal = Number(el.value);
             el = document.getElementById('edit_rev_' + city + '_转正量'); if (el) d['转正量'] = Number(el.value);
             el = document.getElementById('edit_rev_' + city + '_待转正量'); if (el) d['待转正量'] = Number(el.value);
@@ -656,6 +664,7 @@ function saveManualEdit() {
             el = document.getElementById('edit_rev_' + city + '_经销商退'); if (el) d['经销商退'] = Number(el.value);
             el = document.getElementById('edit_rev_' + city + '_KA退'); if (el) d['KA退'] = Number(el.value);
             el = document.getElementById('edit_rev_' + city + '_换包量'); if (el) d['换包量'] = Number(el.value);
+            el = document.getElementById('edit_rev_' + city + '_本月结存'); if (el) d['本月结存'] = Number(el.value);
             el = document.getElementById('edit_rev_' + city + '_areaUsage'); if (el) d.areaUsage = Number(el.value);
         });
 
