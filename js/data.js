@@ -35,15 +35,15 @@ var warehouseData = {
     // 第一行 KPI
     kpi: {
         safety: 0,                 // 安全运营（起）
-        inboundVolume: 3.2,           // 入库量（万台）
+        inboundVolume: 7075.3,       // 入库量（万台）
         inboundMoM: 5.2,            // 入库量环比（%）
-        inboundCompare: 3.0,          // 入库量同期（万台）
-        outboundVolume: 2.8,          // 出库量（万台）
-        outboundMoM: -3.1,           // 出库量环比（%）
-        outboundCompare: 2.9,        // 出库量同期（万台）
-        throughput: 6.0,             // 吞吐量（万台）
-        throughputMoM: 1.8,          // 吞吐量环比（%）
-        throughputCompare: 5.8        // 吞吐量同期（万台）
+        inboundCompare: 6650.7,      // 入库量同期（万台）
+        outboundVolume: 7290.6,      // 出库量（万台）
+        outboundMoM: -3.1,          // 出库量环比（%）
+        outboundCompare: 7582.3,     // 出库量同期（万台）
+        throughput: 14365.9,         // 吞吐量（万台）
+        throughputMoM: 1.8,         // 吞吐量环比（%）
+        throughputCompare: 14078.6     // 吞吐量同期（万台）
     },
 
     // 四地快照
