@@ -48,10 +48,10 @@ var warehouseData = {
 
     // 四地快照
     snapshot: {
-        杭州: { stock: 128456, inbound: 8940, outbound: 7620, efficiency: 92.5, saturation: 68.3, peakLimit: 15000, peakCurrent: 8940, unloadRate24h: 96.2 },
-        上虞: { stock: 87620, inbound: 6230, outbound: 5810, efficiency: 88.1, saturation: 72.6, peakLimit: 12000, peakCurrent: 6230, unloadRate24h: 93.8 },
-        佛山: { stock: 105320, inbound: 7510, outbound: 6940, efficiency: 90.3, saturation: 65.8, peakLimit: 13000, peakCurrent: 7510, unloadRate24h: 95.1 },
-        济南: { stock: 96780, inbound: 6820, outbound: 6380, efficiency: 87.6, saturation: 70.1, peakLimit: 11000, peakCurrent: 6820, unloadRate24h: 91.5 }
+        杭州: { stock: 128456, inbound: 8940, outbound: 7620, efficiency: 92.5, saturation: 68.3, peakLimit: 15000, peakCurrent: 8940, unloadRate24h: 96.2, turnoverDays: 28.5 },
+        上虞: { stock: 87620, inbound: 6230, outbound: 5810, efficiency: 88.1, saturation: 72.6, peakLimit: 12000, peakCurrent: 6230, unloadRate24h: 93.8, turnoverDays: 26.0 },
+        佛山: { stock: 105320, inbound: 7510, outbound: 6940, efficiency: 90.3, saturation: 65.8, peakLimit: 13000, peakCurrent: 7510, unloadRate24h: 95.1, turnoverDays: 30.2 },
+        济南: { stock: 96780, inbound: 6820, outbound: 6380, efficiency: 87.6, saturation: 70.1, peakLimit: 11000, peakCurrent: 6820, unloadRate24h: 91.5, turnoverDays: 27.8 }
     },
 
     // 运营指标（含同期对比）
@@ -226,11 +226,12 @@ function refreshCityCards() {
 function refreshPeakCards() {
     var container = document.getElementById('peakCards');
     if (!container) return;
+    var maxDays = Math.max.apply(null, CITIES.map(function(c) { return warehouseData.snapshot[c].turnoverDays; }));
     container.innerHTML = CITIES.map(function (city) {
         var d = warehouseData.snapshot[city];
-        var pct = Math.round(d.peakCurrent / d.peakLimit * 100);
-        var color = pct > 85 ? 'var(--red)' : pct > 60 ? 'var(--orange-main)' : 'var(--green)';
-        return '<div class="peak-card"><div class="peak-city">&#x1F4CD; ' + city + '</div><div class="peak-value">' + formatNum(d.peakLimit) + '</div><div class="peak-unit">峰值上限（方）</div>' +
+        var pct = Math.round(d.turnoverDays / maxDays * 100);
+        var color = pct > 80 ? 'var(--red)' : pct > 50 ? 'var(--orange-main)' : 'var(--green)';
+        return '<div class="peak-card"><div class="peak-city">&#x1F4CD; ' + city + '</div><div class="peak-value">' + d.turnoverDays + '</div><div class="peak-unit">天</div>' +
             '<div class="peak-bar-bg"><div class="peak-bar-fill" style="width:' + Math.min(pct, 100) + '%;background:' + color + '"></div></div></div>';
     }).join('');
 }
@@ -309,11 +310,12 @@ function downloadTemplate() {
                 '地区': c, '库存量': d.stock, '入库量': d.inbound, '出库量': d.outbound,
                 '存效(%)': d.efficiency, '库容饱和度(%)': d.saturation,
                 '入库峰值上限(方)': d.peakLimit, '当前入库量(方)': d.peakCurrent,
+                '库存周转天数': d.turnoverDays,
                 '24H卸车及时率(%)': d.unloadRate24h
             };
         });
         var ws3 = XLSX.utils.json_to_sheet(snapRows);
-        ws3['!cols'] = [{ wch: 6 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 8 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 18 }];
+        ws3['!cols'] = [{ wch: 6 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 8 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 12 }, { wch: 18 }];
         XLSX.utils.book_append_sheet(wb, ws3, '四地快照');
 
         // Sheet4：逆向物流看板
@@ -410,6 +412,7 @@ function importData(event) {
                         if (row['库容饱和度(%)'] !== undefined) d.saturation = Number(row['库容饱和度(%)']);
                         if (row['入库峰值上限(方)'] !== undefined) d.peakLimit = Number(row['入库峰值上限(方)']);
                         if (row['当前入库量(方)'] !== undefined) d.peakCurrent = Number(row['当前入库量(方)']);
+                        if (row['库存周转天数'] !== undefined) d.turnoverDays = Number(row['库存周转天数']);
                         if (row['24H卸车及时率(%)'] !== undefined) d.unloadRate24h = Number(row['24H卸车及时率(%)']);
                     });
                 }
@@ -475,7 +478,7 @@ function exportData() {
 
         var snapRows = CITIES.map(function (c) {
             var d = warehouseData.snapshot[c];
-            return { '地区': c, '库存量': d.stock, '入库量': d.inbound, '出库量': d.outbound, '存效(%)': d.efficiency, '库容饱和度(%)': d.saturation, '入库峰值上限(方)': d.peakLimit, '当前入库量(方)': d.peakCurrent, '24H卸车及时率(%)': d.unloadRate24h };
+            return { '地区': c, '库存量': d.stock, '入库量': d.inbound, '出库量': d.outbound, '存效(%)': d.efficiency, '库容饱和度(%)': d.saturation, '入库峰值上限(方)': d.peakLimit, '当前入库量(方)': d.peakCurrent, '库存周转天数': d.turnoverDays, '24H卸车及时率(%)': d.unloadRate24h };
         });
         var ws3 = XLSX.utils.json_to_sheet(snapRows);
         XLSX.utils.book_append_sheet(wb, ws3, '四地快照');
@@ -543,8 +546,7 @@ function openManualEdit() {
             html += editInputSnap(city, 'outbound', '出库量', d.outbound);
             html += editInputSnap(city, 'efficiency', '存效(%)', d.efficiency);
             html += editInputSnap(city, 'saturation', '饱和度(%)', d.saturation);
-            html += editInputSnap(city, 'peakLimit', '峰值上限(方)', d.peakLimit);
-            html += editInputSnap(city, 'peakCurrent', '当前入库(方)', d.peakCurrent);
+            html += editInputSnap(city, 'turnoverDays', '库存周转天数', d.turnoverDays);
             html += editInputSnap(city, 'unloadRate24h', '及时率(%)', d.unloadRate24h);
             html += '</div>';
         });
@@ -635,8 +637,7 @@ function saveManualEdit() {
             el = document.getElementById('edit_snap_' + city + '_outbound'); if (el) d.outbound = Number(el.value);
             el = document.getElementById('edit_snap_' + city + '_efficiency'); if (el) d.efficiency = Number(el.value);
             el = document.getElementById('edit_snap_' + city + '_saturation'); if (el) d.saturation = Number(el.value);
-            el = document.getElementById('edit_snap_' + city + '_peakLimit'); if (el) d.peakLimit = Number(el.value);
-            el = document.getElementById('edit_snap_' + city + '_peakCurrent'); if (el) d.peakCurrent = Number(el.value);
+            el = document.getElementById('edit_snap_' + city + '_turnoverDays'); if (el) d.turnoverDays = Number(el.value);
             el = document.getElementById('edit_snap_' + city + '_unloadRate24h'); if (el) d.unloadRate24h = Number(el.value);
         });
 
