@@ -62,11 +62,11 @@ var warehouseData = {
         orderExceptionRate:  { current: 0.8,  compare: 1.2 }    // 订单异常率（%）
     },
 
-    // 逆向日报
+    // 逆向物流看板
     reverse: {
-        杭州: { prevDamage: 12, receiveTotal: 8940, 转正量: 8750, 待转正量: 190, 品质异常: 8, 三码全无: 3, 单实不符: 5, 换包量: 22, todayDamage: 10, areaUsage: 3200 },
-        佛山: { prevDamage: 8, receiveTotal: 7510, 转正量: 7380, 待转正量: 130, 品质异常: 5, 三码全无: 2, 单实不符: 3, 换包量: 15, todayDamage: 7, areaUsage: 2800 },
-        济南: { prevDamage: 10, receiveTotal: 6820, 转正量: 6700, 待转正量: 120, 品质异常: 6, 三码全无: 4, 单实不符: 4, 换包量: 18, todayDamage: 9, areaUsage: 2500 }
+        杭州: { receiveTotal: 8940, '转正量': 8750, '待转正量': 190, '京东呆滞退': 0, '京东在途退': 0, '菜鸟呆滞退': 0, '菜鸟在途退': 0, '2C呆滞退': 0, '2C在途退': 0, '经销商退': 0, 'KA退': 0, '换包量': 22, areaUsage: 3200 },
+        佛山: { receiveTotal: 7510, '转正量': 7380, '待转正量': 130, '京东呆滞退': 0, '京东在途退': 0, '菜鸟呆滞退': 0, '菜鸟在途退': 0, '2C呆滞退': 0, '2C在途退': 0, '经销商退': 0, 'KA退': 0, '换包量': 15, areaUsage: 2800 },
+        济南: { receiveTotal: 6820, '转正量': 6700, '待转正量': 120, '京东呆滞退': 0, '京东在途退': 0, '菜鸟呆滞退': 0, '菜鸟在途退': 0, '2C呆滞退': 0, '2C在途退': 0, '经销商退': 0, 'KA退': 0, '换包量': 18, areaUsage: 2500 }
     },
 
     history: {
@@ -235,16 +235,26 @@ function refreshPeakCards() {
     }).join('');
 }
 
-// ============ 刷新逆向日报表格 ============
+// ============ 刷新逆向物流看板表格 ============
 function refreshReverseTable() {
     var tbody = document.getElementById('reverseBody');
     if (!tbody) return;
     tbody.innerHTML = Object.entries(warehouseData.reverse).map(function (entry) {
         var city = entry[0], d = entry[1];
         return '<tr><td style="font-weight:700;color:var(--orange-light)">' + city + '</td>' +
-            '<td>' + d.prevDamage + '</td><td>' + d.receiveTotal + '</td><td>' + d['转正量'] + '</td>' +
-            '<td>' + d['待转正量'] + '</td><td>' + d['品质异常'] + '</td><td>' + d['三码全无'] + '</td>' +
-            '<td>' + d['单实不符'] + '</td><td>' + d['换包量'] + '</td><td>' + d.todayDamage + '</td><td>' + d.areaUsage + '</td></tr>';
+            '<td>' + d.receiveTotal + '</td>' +
+            '<td>' + d['转正量'] + '</td>' +
+            '<td>' + d['待转正量'] + '</td>' +
+            '<td>' + d['京东呆滞退'] + '</td>' +
+            '<td>' + d['京东在途退'] + '</td>' +
+            '<td>' + d['菜鸟呆滞退'] + '</td>' +
+            '<td>' + d['菜鸟在途退'] + '</td>' +
+            '<td>' + d['2C呆滞退'] + '</td>' +
+            '<td>' + d['2C在途退'] + '</td>' +
+            '<td>' + d['经销商退'] + '</td>' +
+            '<td>' + d['KA退'] + '</td>' +
+            '<td>' + d['换包量'] + '</td>' +
+            '<td>' + d.areaUsage + '</td></tr>';
     }).join('');
 }
 
@@ -306,20 +316,21 @@ function downloadTemplate() {
         ws3['!cols'] = [{ wch: 6 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 8 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 18 }];
         XLSX.utils.book_append_sheet(wb, ws3, '四地快照');
 
-        // Sheet4：逆向日报
+        // Sheet4：逆向物流看板
         var revRows = Object.entries(warehouseData.reverse).map(function (entry) {
             var city = entry[0], d = entry[1];
             return {
-                '地区': city, '前一日破损量': d.prevDamage, '接收总量/台': d.receiveTotal,
-                '转正量': d['转正量'], '待转正量': d['待转正量'],
-                '品质异常': d['品质异常'], '三码全无': d['三码全无'],
-                '单实不符': d['单实不符'], '换包量': d['换包量'],
-                '当日破损量': d.todayDamage, '占用面积': d.areaUsage
+                '地区': city, '接收总量/台': d.receiveTotal, '转正量': d['转正量'], '待转正量': d['待转正量'],
+                '京东呆滞退': d['京东呆滞退'], '京东在途退': d['京东在途退'],
+                '菜鸟呆滞退': d['菜鸟呆滞退'], '菜鸟在途退': d['菜鸟在途退'],
+                '2C呆滞退': d['2C呆滞退'], '2C在途退': d['2C在途退'],
+                '经销商退': d['经销商退'], 'KA退': d['KA退'],
+                '换包量': d['换包量'], '占用面积': d.areaUsage
             };
         });
         var ws4 = XLSX.utils.json_to_sheet(revRows);
-        ws4['!cols'] = [{ wch: 6 }, { wch: 12 }, { wch: 12 }, { wch: 8 }, { wch: 10 }, { wch: 8 }, { wch: 8 }, { wch: 8 }, { wch: 8 }, { wch: 10 }, { wch: 10 }];
-        XLSX.utils.book_append_sheet(wb, ws4, '逆向日报');
+        ws4['!cols'] = [{ wch: 6 }, { wch: 12 }, { wch: 8 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 10 }];
+        XLSX.utils.book_append_sheet(wb, ws4, '逆向物流看板');
 
         XLSX.writeFile(wb, '仓储数据导入模板.xlsx');
         showToast('模板已下载，请按模板格式填写后导入');
@@ -403,22 +414,26 @@ function importData(event) {
                     });
                 }
 
-                // 导入逆向日报
-                if (workbook.SheetNames.indexOf('逆向日报') !== -1) {
-                    var revRows = XLSX.utils.sheet_to_json(workbook.Sheets['逆向日报']);
+                // 导入逆向物流看板
+                var revSheet = workbook.SheetNames.indexOf('逆向物流看板') !== -1 ? '逆向物流看板' : (workbook.SheetNames.indexOf('逆向日报') !== -1 ? '逆向日报' : null);
+                if (revSheet) {
+                    var revRows = XLSX.utils.sheet_to_json(workbook.Sheets[revSheet]);
                     revRows.forEach(function (row) {
                         var city = String(row['地区'] || '').trim();
                         if (!warehouseData.reverse[city]) return;
                         var rev = warehouseData.reverse[city];
-                        if (row['前一日破损量'] !== undefined) rev.prevDamage = Number(row['前一日破损量']);
                         if (row['接收总量/台'] !== undefined) rev.receiveTotal = Number(row['接收总量/台']);
                         if (row['转正量'] !== undefined) rev['转正量'] = Number(row['转正量']);
                         if (row['待转正量'] !== undefined) rev['待转正量'] = Number(row['待转正量']);
-                        if (row['品质异常'] !== undefined) rev['品质异常'] = Number(row['品质异常']);
-                        if (row['三码全无'] !== undefined) rev['三码全无'] = Number(row['三码全无']);
-                        if (row['单实不符'] !== undefined) rev['单实不符'] = Number(row['单实不符']);
+                        if (row['京东呆滞退'] !== undefined) rev['京东呆滞退'] = Number(row['京东呆滞退']);
+                        if (row['京东在途退'] !== undefined) rev['京东在途退'] = Number(row['京东在途退']);
+                        if (row['菜鸟呆滞退'] !== undefined) rev['菜鸟呆滞退'] = Number(row['菜鸟呆滞退']);
+                        if (row['菜鸟在途退'] !== undefined) rev['菜鸟在途退'] = Number(row['菜鸟在途退']);
+                        if (row['2C呆滞退'] !== undefined) rev['2C呆滞退'] = Number(row['2C呆滞退']);
+                        if (row['2C在途退'] !== undefined) rev['2C在途退'] = Number(row['2C在途退']);
+                        if (row['经销商退'] !== undefined) rev['经销商退'] = Number(row['经销商退']);
+                        if (row['KA退'] !== undefined) rev['KA退'] = Number(row['KA退']);
                         if (row['换包量'] !== undefined) rev['换包量'] = Number(row['换包量']);
-                        if (row['当日破损量'] !== undefined) rev.todayDamage = Number(row['当日破损量']);
                         if (row['占用面积'] !== undefined) rev.areaUsage = Number(row['占用面积']);
                     });
                 }
@@ -467,10 +482,10 @@ function exportData() {
 
         var revRows = Object.entries(warehouseData.reverse).map(function (entry) {
             var city = entry[0], d = entry[1];
-            return { '地区': city, '前一日破损量': d.prevDamage, '接收总量/台': d.receiveTotal, '转正量': d['转正量'], '待转正量': d['待转正量'], '品质异常': d['品质异常'], '三码全无': d['三码全无'], '单实不符': d['单实不符'], '换包量': d['换包量'], '当日破损量': d.todayDamage, '占用面积': d.areaUsage };
+            return { '地区': city, '接收总量/台': d.receiveTotal, '转正量': d['转正量'], '待转正量': d['待转正量'], '京东呆滞退': d['京东呆滞退'], '京东在途退': d['京东在途退'], '菜鸟呆滞退': d['菜鸟呆滞退'], '菜鸟在途退': d['菜鸟在途退'], '2C呆滞退': d['2C呆滞退'], '2C在途退': d['2C在途退'], '经销商退': d['经销商退'], 'KA退': d['KA退'], '换包量': d['换包量'], '占用面积': d.areaUsage };
         });
         var ws4 = XLSX.utils.json_to_sheet(revRows);
-        XLSX.utils.book_append_sheet(wb, ws4, '逆向日报');
+        XLSX.utils.book_append_sheet(wb, ws4, '逆向物流看板');
 
         XLSX.writeFile(wb, '仓储数据_' + new Date().toISOString().slice(0, 10) + '.xlsx');
         showToast('数据已导出！');
@@ -535,21 +550,24 @@ function openManualEdit() {
         });
         html += '</div>';
 
-        // 逆向日报编辑
-        html += '<div class="edit-section"><div class="edit-section-title">逆向日报数据</div>';
+        // 逆向物流看板编辑
+        html += '<div class="edit-section"><div class="edit-section-title">逆向物流看板数据</div>';
         Object.entries(warehouseData.reverse).forEach(function (entry) {
             var city = entry[0], d = entry[1];
             html += '<div style="border:1px solid var(--border-color);border-radius:8px;padding:10px;margin-bottom:8px;">';
             html += '<div style="color:var(--orange-main);font-weight:700;margin-bottom:6px;">&#x1F504; ' + city + '</div>';
-            html += editInputRev(city, 'prevDamage', '前一日破损量', d.prevDamage);
             html += editInputRev(city, 'receiveTotal', '接收总量/台', d.receiveTotal);
             html += editInputRev(city, '转正量', '转正量', d['转正量']);
             html += editInputRev(city, '待转正量', '待转正量', d['待转正量']);
-            html += editInputRev(city, '品质异常', '品质异常', d['品质异常']);
-            html += editInputRev(city, '三码全无', '三码全无', d['三码全无']);
-            html += editInputRev(city, '单实不符', '单实不符', d['单实不符']);
+            html += editInputRev(city, '京东呆滞退', '京东呆滞退', d['京东呆滞退']);
+            html += editInputRev(city, '京东在途退', '京东在途退', d['京东在途退']);
+            html += editInputRev(city, '菜鸟呆滞退', '菜鸟呆滞退', d['菜鸟呆滞退']);
+            html += editInputRev(city, '菜鸟在途退', '菜鸟在途退', d['菜鸟在途退']);
+            html += editInputRev(city, '2C呆滞退', '2C呆滞退', d['2C呆滞退']);
+            html += editInputRev(city, '2C在途退', '2C在途退', d['2C在途退']);
+            html += editInputRev(city, '经销商退', '经销商退', d['经销商退']);
+            html += editInputRev(city, 'KA退', 'KA退', d['KA退']);
             html += editInputRev(city, '换包量', '换包量', d['换包量']);
-            html += editInputRev(city, 'todayDamage', '当日破损量', d.todayDamage);
             html += editInputRev(city, 'areaUsage', '占用面积', d.areaUsage);
             html += '</div>';
         });
@@ -622,18 +640,21 @@ function saveManualEdit() {
             el = document.getElementById('edit_snap_' + city + '_unloadRate24h'); if (el) d.unloadRate24h = Number(el.value);
         });
 
-        // 保存逆向日报
+        // 保存逆向物流看板
         Object.entries(warehouseData.reverse).forEach(function (entry) {
             var city = entry[0], d = entry[1];
-            el = document.getElementById('edit_rev_' + city + '_prevDamage'); if (el) d.prevDamage = Number(el.value);
             el = document.getElementById('edit_rev_' + city + '_receiveTotal'); if (el) d.receiveTotal = Number(el.value);
             el = document.getElementById('edit_rev_' + city + '_转正量'); if (el) d['转正量'] = Number(el.value);
             el = document.getElementById('edit_rev_' + city + '_待转正量'); if (el) d['待转正量'] = Number(el.value);
-            el = document.getElementById('edit_rev_' + city + '_品质异常'); if (el) d['品质异常'] = Number(el.value);
-            el = document.getElementById('edit_rev_' + city + '_三码全无'); if (el) d['三码全无'] = Number(el.value);
-            el = document.getElementById('edit_rev_' + city + '_单实不符'); if (el) d['单实不符'] = Number(el.value);
+            el = document.getElementById('edit_rev_' + city + '_京东呆滞退'); if (el) d['京东呆滞退'] = Number(el.value);
+            el = document.getElementById('edit_rev_' + city + '_京东在途退'); if (el) d['京东在途退'] = Number(el.value);
+            el = document.getElementById('edit_rev_' + city + '_菜鸟呆滞退'); if (el) d['菜鸟呆滞退'] = Number(el.value);
+            el = document.getElementById('edit_rev_' + city + '_菜鸟在途退'); if (el) d['菜鸟在途退'] = Number(el.value);
+            el = document.getElementById('edit_rev_' + city + '_2C呆滞退'); if (el) d['2C呆滞退'] = Number(el.value);
+            el = document.getElementById('edit_rev_' + city + '_2C在途退'); if (el) d['2C在途退'] = Number(el.value);
+            el = document.getElementById('edit_rev_' + city + '_经销商退'); if (el) d['经销商退'] = Number(el.value);
+            el = document.getElementById('edit_rev_' + city + '_KA退'); if (el) d['KA退'] = Number(el.value);
             el = document.getElementById('edit_rev_' + city + '_换包量'); if (el) d['换包量'] = Number(el.value);
-            el = document.getElementById('edit_rev_' + city + '_todayDamage'); if (el) d.todayDamage = Number(el.value);
             el = document.getElementById('edit_rev_' + city + '_areaUsage'); if (el) d.areaUsage = Number(el.value);
         });
 
