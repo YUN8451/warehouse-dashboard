@@ -156,6 +156,70 @@ function renderRateChart() {
     });
 }
 
+/* ============ 入库及时率趋势图（24H）============ */
+function renderJishilvChart() {
+    const ctx = document.getElementById('mainChart');
+    if (!ctx) return;
+    if (mainChartInstance) mainChartInstance.destroy();
+
+    const data = warehouseData.trendJishilv;
+    const datasets = CITIES.map(city => ({
+        label: city + ' 及时率',
+        data: data[city],
+        borderColor: CITY_COLORS[city].main,
+        backgroundColor: CITY_COLORS[city].bg,
+        borderWidth: 2,
+        pointRadius: 2,
+        pointHoverRadius: 5,
+        tension: 0.35,
+        fill: false
+    }));
+
+    mainChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: { labels: data.dates, datasets },
+        options: {
+            ...baseOptions('入库及时率趋势（24H）'),
+            scales: {
+                x: { ticks: { color: chartFontColor, font: { size: 10 }, maxRotation: 45 }, grid: { color: chartGridColor } },
+                y: { ticks: { color: chartFontColor, font: { size: 10 }, callback: v => (v * 100).toFixed(0) + '%' }, grid: { color: chartGridColor }, min: 0, max: 1, title: { display: true, text: '及时率', color: chartFontColor } }
+            }
+        }
+    });
+}
+
+/* ============ 饱和度趋势图（5月）============ */
+function renderBaoheduChart() {
+    const ctx = document.getElementById('mainChart');
+    if (!ctx) return;
+    if (mainChartInstance) mainChartInstance.destroy();
+
+    const data = warehouseData.trendBaohedu;
+    const datasets = CITIES.map(city => ({
+        label: city + ' 饱和度',
+        data: data[city],
+        borderColor: CITY_COLORS[city].main,
+        backgroundColor: CITY_COLORS[city].bg,
+        borderWidth: 2,
+        pointRadius: 2,
+        pointHoverRadius: 5,
+        tension: 0.35,
+        fill: true
+    }));
+
+    mainChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: { labels: data.dates, datasets },
+        options: {
+            ...baseOptions('饱和度趋势（5月）'),
+            scales: {
+                x: { ticks: { color: chartFontColor, font: { size: 10 }, maxRotation: 45 }, grid: { color: chartGridColor } },
+                y: { ticks: { color: chartFontColor, font: { size: 10 }, callback: v => (v * 100).toFixed(0) + '%' }, grid: { color: chartGridColor }, min: 0, max: 1, title: { display: true, text: '饱和度', color: chartFontColor } }
+            }
+        }
+    });
+}
+
 /* ============ 切换图表 ============ */
 function switchChart(type) {
     currentChartType = type;
@@ -164,6 +228,17 @@ function switchChart(type) {
     if (type === 'inout') { tabs[0].classList.add('active'); renderInOutChart(); }
     if (type === 'saturation') { tabs[1].classList.add('active'); renderSaturationChart(); }
     if (type === 'rate') { tabs[2].classList.add('active'); renderRateChart(); }
+    if (type === 'jishilv') { tabs[3].classList.add('active'); renderJishilvChart(); }
+    if (type === 'baohedu') { tabs[4].classList.add('active'); renderBaoheduChart(); }
+}
+
+/* ============ 刷新所有图表 ============ */
+function refreshCharts() {
+    if (currentChartType === 'inout') renderInOutChart();
+    else if (currentChartType === 'saturation') renderSaturationChart();
+    else if (currentChartType === 'rate') renderRateChart();
+    else if (currentChartType === 'jishilv') renderJishilvChart();
+    else if (currentChartType === 'baohedu') renderBaoheduChart();
 }
 
 /* ============ 刷新所有图表 ============ */
