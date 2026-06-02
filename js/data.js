@@ -114,10 +114,19 @@ warehouseData.history = generateHistoryData();
 // 已使用真实5月出入库数据（见上文 history 初始化）
 
 // ============ 计算环比箭头/颜色 ============
-function momHtml(value) {
-    if (value > 0) return '<span class="mom-value up">▲ ' + value.toFixed(1) + '%</span>';
-    if (value < 0) return '<span class="mom-value down">▼ ' + Math.abs(value).toFixed(1) + '%</span>';
-    return '<span class="mom-value flat">— 0.0%</span>';
+function updateMomEl(id, value) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    if (value > 0) {
+        el.className = 'mom-value up';
+        el.textContent = '▲ ' + value.toFixed(1) + '%';
+    } else if (value < 0) {
+        el.className = 'mom-value down';
+        el.textContent = '▼ ' + Math.abs(value).toFixed(1) + '%';
+    } else {
+        el.className = 'mom-value flat';
+        el.textContent = '— 0.0%';
+    }
 }
 
 // ============ 计算同期对比箭头/颜色 ============
@@ -136,13 +145,13 @@ function refreshKPI() {
     animateValue('safetyCount', k.safety);
     animateValue('inboundVolume', Math.round(k.inboundVolume * 10000));
     var el;
-    el = document.getElementById('inboundMoM'); if (el) el.outerHTML = momHtml(k.inboundMoM);
+    updateMomEl('inboundMoM', k.inboundMoM);
     el = document.getElementById('inboundCompare'); if (el) el.textContent = formatNum(Math.round(k.inboundCompare * 10000));
     el = document.getElementById('outboundVolume'); if (el) animateValue('outboundVolume', Math.round(k.outboundVolume * 10000));
-    el = document.getElementById('outboundMoM'); if (el) el.outerHTML = momHtml(k.outboundMoM);
+    updateMomEl('outboundMoM', k.outboundMoM);
     el = document.getElementById('outboundCompare'); if (el) el.textContent = formatNum(Math.round(k.outboundCompare * 10000));
     el = document.getElementById('throughputVolume'); if (el) animateValue('throughputVolume', Math.round(k.throughput * 10000));
-    el = document.getElementById('throughputMoM'); if (el) el.outerHTML = momHtml(k.throughputMoM);
+    updateMomEl('throughputMoM', k.throughputMoM);
     el = document.getElementById('throughputCompare'); if (el) el.textContent = formatNum(Math.round(k.throughputCompare * 10000));
 }
 
@@ -410,6 +419,7 @@ function importData(event) {
                 }
 
                 refreshAll();
+                saveToLocal();
                 showToast('数据导入成功！');
             } catch (err) {
                 showToast('导入失败：' + err.message, true);
@@ -624,6 +634,7 @@ function saveManualEdit() {
 
         closeManualEdit();
         refreshAll();
+        saveToLocal();
         showToast('数据已更新！');
     } catch (err) {
         showToast('保存失败：' + err.message, true);
@@ -648,3 +659,39 @@ function showToast(msg, isError) {
         setTimeout(function () { toast.style.opacity = '0'; }, 2500);
     } catch (e) { console.error('showToast error:', e); }
 }
+
+// ============ localStorage 持久化 ============
+var STORAGE_KEY = 'warehouse_dashboard_data';
+
+function deepMerge(target, source) {
+    Object.keys(source).forEach(function (key) {
+        if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key]) &&
+            target[key] && typeof target[key] === 'object' && !Array.isArray(target[key])) {
+            deepMerge(target[key], source[key]);
+        } else {
+            target[key] = source[key];
+        }
+    });
+}
+
+function saveToLocal() {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(warehouseData));
+    } catch (e) { console.error('saveToLocal error:', e); }
+}
+
+function loadFromLocal() {
+    try {
+        var raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return false;
+        var saved = JSON.parse(raw);
+        deepMerge(warehouseData, saved);
+        return true;
+    } catch (e) {
+        console.error('loadFromLocal error:', e);
+        return false;
+    }
+}
+
+// 启动时加载本地持久化数据
+loadFromLocal();
