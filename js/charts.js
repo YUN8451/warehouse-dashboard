@@ -86,8 +86,8 @@ function renderInOutChart() {
 
     mainChartInstance = new Chart(ctx, {
         type: 'line',
-        data: { labels: hist.dates.map(d => d.slice(5)), datasets },
-        options: baseOptions('出入库趋势')
+        data: { labels: hist.dates, datasets },
+        options: baseOptions('出入库趋势（台）')
     });
 }
 
