@@ -130,12 +130,17 @@ function updateMomEl(id, value) {
 }
 
 // ============ 计算同期对比箭头/颜色 ============
-function compareHtml(current, compare) {
+function compareHtml(current, compare, lowerIsBetter) {
     if (compare === 0) return '<span class="badge-flat">— 同期对比 N/A</span>';
     var diff = current - compare;
-    var pct = compare !== 0 ? ((diff / compare) * 100).toFixed(1) : 0;
-    if (diff > 0) return '<span class="metric-card-badge badge-up">▲ +' + pct + '%</span>';
-    if (diff < 0) return '<span class="metric-card-badge badge-down">▼ ' + pct + '%</span>';
+    var absPct = compare !== 0 ? Math.abs((diff / compare) * 100).toFixed(1) : '0.0';
+    if (lowerIsBetter) {
+        if (diff < 0) return '<span class="metric-card-badge badge-up">▲ +' + absPct + '%</span>';
+        if (diff > 0) return '<span class="metric-card-badge badge-down">▼ -' + absPct + '%</span>';
+    } else {
+        if (diff > 0) return '<span class="metric-card-badge badge-up">▲ +' + absPct + '%</span>';
+        if (diff < 0) return '<span class="metric-card-badge badge-down">▼ -' + absPct + '%</span>';
+    }
     return '<span class="metric-card-badge badge-flat">— 持平</span>';
 }
 
@@ -164,7 +169,7 @@ function refreshMetrics() {
         {
             title: '库存周转天数',
             current: m.turnoverDays.current + ' 天',
-            compare: compareHtml(m.turnoverDays.current, m.turnoverDays.compare),
+            compare: compareHtml(m.turnoverDays.current, m.turnoverDays.compare, true),
             unit: '天'
         },
         {
@@ -182,7 +187,7 @@ function refreshMetrics() {
         {
             title: '订单异常率',
             current: m.orderExceptionRate.current + '%',
-            compare: compareHtml(m.orderExceptionRate.current, m.orderExceptionRate.compare),
+            compare: compareHtml(m.orderExceptionRate.current, m.orderExceptionRate.compare, true),
             unit: '%'
         }
     ].map(function (item, idx) {
