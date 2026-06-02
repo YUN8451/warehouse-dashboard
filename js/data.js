@@ -230,7 +230,7 @@ function refreshPeakCards() {
         var d = warehouseData.snapshot[city];
         var pct = Math.round(d.peakCurrent / d.peakLimit * 100);
         var color = pct > 85 ? 'var(--red)' : pct > 60 ? 'var(--orange-main)' : 'var(--green)';
-        return '<div class="peak-card"><div class="peak-city">&#x1F4CD; ' + city + '</div><div class="peak-value">' + formatNum(d.peakCurrent) + '</div><div class="peak-unit">/ ' + formatNum(d.peakLimit) + ' 方</div>' +
+        return '<div class="peak-card"><div class="peak-city">&#x1F4CD; ' + city + '</div><div class="peak-value">' + formatNum(d.peakLimit) + '</div><div class="peak-unit">峰值上限（方）</div>' +
             '<div class="peak-bar-bg"><div class="peak-bar-fill" style="width:' + Math.min(pct, 100) + '%;background:' + color + '"></div></div></div>';
     }).join('');
 }
