@@ -56,7 +56,7 @@ var warehouseData = {
 
     // 运营指标（含同期对比）
     metrics: {
-        turnoverDays:       { current: 28.5, compare: 26.0 },  // 库存周转天数
+        turnoverDays:       { current: 28.5, compare: 26.0 },  // 实物周转天数
         inventoryAccuracy:  { current: 99.2, compare: 98.8 },  // 库存准确率（%）
         volumeUtilization:   { current: 68.3, compare: 65.0 },  // 容积利用率（%）
         orderExceptionRate:  { current: 0.8,  compare: 1.2 }    // 订单异常率（%）
@@ -168,7 +168,7 @@ function refreshMetrics() {
     var m = warehouseData.metrics;
     container.innerHTML = [
         {
-            title: '库存周转天数',
+            title: '实物周转天数',
             current: m.turnoverDays.current + ' 天',
             compare: compareHtml(m.turnoverDays.current, m.turnoverDays.compare, true),
             unit: '天'
@@ -297,7 +297,7 @@ function downloadTemplate() {
         // Sheet2：运营指标
         var m = warehouseData.metrics;
         var metricRows = [
-            { '指标名称': '库存周转天数', '当前值': m.turnoverDays.current, '同期对比值': m.turnoverDays.compare, '单位': '天' },
+            { '指标名称': '实物周转天数', '当前值': m.turnoverDays.current, '同期对比值': m.turnoverDays.compare, '单位': '天' },
             { '指标名称': '库存准确率', '当前值': m.inventoryAccuracy.current, '同期对比值': m.inventoryAccuracy.compare, '单位': '%' },
             { '指标名称': '容积利用率', '当前值': m.volumeUtilization.current, '同期对比值': m.volumeUtilization.compare, '单位': '%' },
             { '指标名称': '订单异常率', '当前值': m.orderExceptionRate.current, '同期对比值': m.orderExceptionRate.compare, '单位': '%' }
@@ -313,7 +313,7 @@ function downloadTemplate() {
                 '地区': c, '库存量': d.stock, '入库量': d.inbound, '出库量': d.outbound,
                 '存效(%)': d.efficiency, '库容饱和度(%)': d.saturation,
                 '入库峰值上限(方)': d.peakLimit, '当前入库量(方)': d.peakCurrent,
-                '库存周转天数': d.turnoverDays,
+                '实物周转天数': d.turnoverDays,
                 '24H卸车及时率(%)': d.unloadRate24h
             };
         });
@@ -415,7 +415,7 @@ function importData(event) {
                         if (row['库容饱和度(%)'] !== undefined) d.saturation = Number(row['库容饱和度(%)']);
                         if (row['入库峰值上限(方)'] !== undefined) d.peakLimit = Number(row['入库峰值上限(方)']);
                         if (row['当前入库量(方)'] !== undefined) d.peakCurrent = Number(row['当前入库量(方)']);
-                        if (row['库存周转天数'] !== undefined) d.turnoverDays = Number(row['库存周转天数']);
+                        if (row['实物周转天数'] !== undefined) d.turnoverDays = Number(row['实物周转天数']);
                         if (row['24H卸车及时率(%)'] !== undefined) d.unloadRate24h = Number(row['24H卸车及时率(%)']);
                     });
                 }
@@ -473,7 +473,7 @@ function exportData() {
 
         var m = warehouseData.metrics;
         var metricRows = [
-            { '指标名称': '库存周转天数', '当前值': m.turnoverDays.current, '同期对比值': m.turnoverDays.compare, '单位': '天' },
+            { '指标名称': '实物周转天数', '当前值': m.turnoverDays.current, '同期对比值': m.turnoverDays.compare, '单位': '天' },
             { '指标名称': '库存准确率', '当前值': m.inventoryAccuracy.current, '同期对比值': m.inventoryAccuracy.compare, '单位': '%' },
             { '指标名称': '容积利用率', '当前值': m.volumeUtilization.current, '同期对比值': m.volumeUtilization.compare, '单位': '%' },
             { '指标名称': '订单异常率', '当前值': m.orderExceptionRate.current, '同期对比值': m.orderExceptionRate.compare, '单位': '%' }
@@ -483,7 +483,7 @@ function exportData() {
 
         var snapRows = CITIES.map(function (c) {
             var d = warehouseData.snapshot[c];
-            return { '地区': c, '库存量': d.stock, '入库量': d.inbound, '出库量': d.outbound, '存效(%)': d.efficiency, '库容饱和度(%)': d.saturation, '入库峰值上限(方)': d.peakLimit, '当前入库量(方)': d.peakCurrent, '库存周转天数': d.turnoverDays, '24H卸车及时率(%)': d.unloadRate24h };
+            return { '地区': c, '库存量': d.stock, '入库量': d.inbound, '出库量': d.outbound, '存效(%)': d.efficiency, '库容饱和度(%)': d.saturation, '入库峰值上限(方)': d.peakLimit, '当前入库量(方)': d.peakCurrent, '实物周转天数': d.turnoverDays, '24H卸车及时率(%)': d.unloadRate24h };
         });
         var ws3 = XLSX.utils.json_to_sheet(snapRows);
         XLSX.utils.book_append_sheet(wb, ws3, '四地快照');
@@ -530,8 +530,8 @@ function openManualEdit() {
         // 运营指标编辑
         html += '<div class="edit-section"><div class="edit-section-title">运营指标（含同期对比）</div>';
         html += '<div class="edit-grid">';
-        html += editInputMetric('turnoverDays_current', '库存周转天数-当前', warehouseData.metrics.turnoverDays.current);
-        html += editInputMetric('turnoverDays_compare', '库存周转天数-同期', warehouseData.metrics.turnoverDays.compare);
+        html += editInputMetric('turnoverDays_current', '实物周转天数-当前', warehouseData.metrics.turnoverDays.current);
+        html += editInputMetric('turnoverDays_compare', '实物周转天数-同期', warehouseData.metrics.turnoverDays.compare);
         html += editInputMetric('inventoryAccuracy_current', '库存准确率-当前(%)', warehouseData.metrics.inventoryAccuracy.current);
         html += editInputMetric('inventoryAccuracy_compare', '库存准确率-同期(%)', warehouseData.metrics.inventoryAccuracy.compare);
         html += editInputMetric('volumeUtilization_current', '容积利用率-当前(%)', warehouseData.metrics.volumeUtilization.current);
@@ -551,7 +551,7 @@ function openManualEdit() {
             html += editInputSnap(city, 'outbound', '出库量', d.outbound);
             html += editInputSnap(city, 'efficiency', '存效(%)', d.efficiency);
             html += editInputSnap(city, 'saturation', '饱和度(%)', d.saturation);
-            html += editInputSnap(city, 'turnoverDays', '库存周转天数', d.turnoverDays);
+            html += editInputSnap(city, 'turnoverDays', '实物周转天数', d.turnoverDays);
             html += editInputSnap(city, 'unloadRate24h', '及时率(%)', d.unloadRate24h);
             html += '</div>';
         });
