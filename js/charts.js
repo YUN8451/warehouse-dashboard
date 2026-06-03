@@ -84,10 +84,14 @@ function renderInOutChart() {
         });
     });
 
+    const opts = baseOptions('出入库趋势（台）');
+    opts.plugins.legend.labels.usePointStyle = false;
+    opts.plugins.legend.labels.boxWidth = 24;
+
     mainChartInstance = new Chart(ctx, {
         type: 'line',
         data: { labels: hist.dates, datasets },
-        options: baseOptions('出入库趋势（台）')
+        options: opts
     });
 }
 
