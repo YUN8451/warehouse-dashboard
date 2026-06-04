@@ -1,3 +1,5 @@
+var CITIES = ['杭州', '上虞', '佛山', '济南'];
+
 var warehouseData = {
     // 第一行 KPI
     kpi: {
