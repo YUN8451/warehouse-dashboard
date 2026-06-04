@@ -580,13 +580,20 @@ function loadFromLocal() {
         var raw = localStorage.getItem(STORAGE_KEY);
         if (!raw) return false;
         var saved = JSON.parse(raw);
+        // 数据完整性检查：关键字段必须存在且合理
+        if (!saved.kpi || !saved.kpi.inboundVolume || saved.kpi.inboundVolume === 0) {
+            console.warn('localStorage 数据不完整，已清除');
+            localStorage.removeItem(STORAGE_KEY);
+            return false;
+        }
         deepMerge(warehouseData, saved);
         return true;
     } catch (e) {
         console.error('loadFromLocal error:', e);
+        localStorage.removeItem(STORAGE_KEY);
         return false;
     }
 }
 
-// 启动时加载本地持久化数据
+// 启动时加载本地持久化数据（会自动检测并清除损坏数据）
 loadFromLocal();
