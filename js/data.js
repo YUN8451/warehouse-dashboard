@@ -34,21 +34,25 @@ var CITIES = ['杭州', '上虞', '佛山', '济南'];
 var warehouseData = {
     // 第一行 KPI
     kpi: {
-        safety: 0,                 // 安全运营（起）
-        inboundVolume: 7075.3,       // 入库量（万台）
-        inboundMoM: 5.2,            // 入库量环比（%）
-        inboundCompare: 6650.7,      // 入库量同期（万台）
-        outboundVolume: 7290.6,      // 出库量（万台）
-        outboundMoM: -3.1,          // 出库量环比（%）
-        outboundCompare: 7582.3,     // 出库量同期（万台）
-        throughput: 14365.9,         // 吞吐量（万台）
-        throughputMoM: 1.8,         // 吞吐量环比（%）
-        throughputCompare: 14078.6     // 吞吐量同期（万台）
+        safety: 0,
+        inboundVolume: 287.1,
+        inboundMoM: -20.7,
+        inboundCompare: 362,
+        outboundVolume: 368.8,
+        outboundMoM: 0.98,
+        outboundCompare: 365.2,
+        throughput: 655.9,
+        throughputMoM: -9.8,
+        throughputCompare: 727.1
     },
 
     // 四地快照
     snapshot: {
-        杭州: { stock: 128456, inbound: 8940, outbound: 7620, efficiency: 92.5, saturation: 68.3, peakLimit: 15000, peakCurrent: 8940, unloadRate24h: 96.2, turnoverDays: 28.5 },
+    杭州: { stock: 1674795, inbound: 1487641, outbound: 1840240, efficiency: 0.71, saturation: 86, peakLimit: 1385, peakCurrent: 8940, unloadRate24h: 97, turnoverDays: 25 },
+    上虞: { stock: 17324, inbound: 17237, outbound: 225229, efficiency: 0.03, saturation: 3, peakLimit: 542, peakCurrent: 6230, unloadRate24h: 100, turnoverDays: 17 },
+    佛山: { stock: 1034287, inbound: 802877, outbound: 984935, efficiency: 0.82, saturation: 94, peakLimit: 1453, peakCurrent: 7510, unloadRate24h: 98, turnoverDays: 30 },
+    济南: { stock: 499064, inbound: 563265, outbound: 637476, efficiency: 0.87, saturation: 81, peakLimit: 1168, peakCurrent: 6820, unloadRate24h: 100, turnoverDays: 24 }
+},
         上虞: { stock: 87620, inbound: 6230, outbound: 5810, efficiency: 88.1, saturation: 72.6, peakLimit: 12000, peakCurrent: 6230, unloadRate24h: 93.8, turnoverDays: 26.0 },
         佛山: { stock: 105320, inbound: 7510, outbound: 6940, efficiency: 90.3, saturation: 65.8, peakLimit: 13000, peakCurrent: 7510, unloadRate24h: 95.1, turnoverDays: 30.2 },
         济南: { stock: 96780, inbound: 6820, outbound: 6380, efficiency: 87.6, saturation: 70.1, peakLimit: 11000, peakCurrent: 6820, unloadRate24h: 91.5, turnoverDays: 27.8 }
@@ -56,7 +60,11 @@ var warehouseData = {
 
     // 运营指标（含同期对比）
     metrics: {
-        turnoverDays:       { current: 28.5, compare: 26.0 },  // 实物周转天数
+        turnoverDays:       { current: 24, compare: 28 },
+        inventoryAccuracy:  { current: 100, compare: 99.5 },
+        volumeUtilization:   { current: 88, compare: 95 },
+        orderExceptionRate:  { current: 0.038, compare: 0.04 }
+    },  // 实物周转天数
         inventoryAccuracy:  { current: 99.2, compare: 98.8 },  // 库存准确率（%）
         volumeUtilization:   { current: 68.3, compare: 65.0 },  // 容积利用率（%）
         orderExceptionRate:  { current: 0.8,  compare: 1.2 }    // 订单异常率（%）
@@ -64,7 +72,11 @@ var warehouseData = {
 
     // 逆向物流看板
     reverse: {
-        杭州: { '上月结存': 0, receiveTotal: 8940, '转正量': 8750, '待转正量': 190, '京东呆滞退': 0, '京东在途退': 0, '菜鸟呆滞退': 0, '菜鸟在途退': 0, '2C呆滞退': 0, '2C在途退': 0, '经销商退': 0, 'KA退': 0, '换包量': 22, '本月结存': 0, areaUsage: 3200 },
+    杭州: { '上月结存': 20634, 'receiveTotal': 1094, '转正量': 379, '待转正量': 715, '京东呆滞退': 92, '京东在途退': 489, '菜鸟呆滞退': 0, '菜鸟在途退': 20, '2C呆滞退': 204, '2C在途退': 199, '经销商退': 60, 'KA退': 30, '换包量': 3105, '本月结存': 18244, 'areaUsage': 1792, 'prevDamage': 12, '品质异常': 8, '三码全无': 3, '单实不符': 5, 'todayDamage': 10 },
+    上虞: { '上月结存': 8353, 'receiveTotal': 144, '转正量': 0, '待转正量': 144, '京东呆滞退': 0, '京东在途退': 0, '菜鸟呆滞退': 0, '菜鸟在途退': 0, '2C呆滞退': 0, '2C在途退': 144, '经销商退': 0, 'KA退': 0, '换包量': 72, '本月结存': 8333, 'areaUsage': 0 },
+    佛山: { '上月结存': 1677, 'receiveTotal': 1396, '转正量': 1099, '待转正量': 297, '京东呆滞退': 0, '京东在途退': 0, '菜鸟呆滞退': 0, '菜鸟在途退': 0, '2C呆滞退': 1396, '2C在途退': 0, '经销商退': 0, 'KA退': 0, '换包量': 210, '本月结存': 1764, 'areaUsage': 100, 'prevDamage': 8, '品质异常': 5, '三码全无': 2, '单实不符': 3, 'todayDamage': 7 },
+    济南: { '上月结存': 17466, 'receiveTotal': 648, '转正量': 366, '待转正量': 282, '京东呆滞退': 226, '京东在途退': 204, '菜鸟呆滞退': 0, '菜鸟在途退': 12, '2C呆滞退': 0, '2C在途退': 100, '经销商退': 106, 'KA退': 0, '换包量': 1182, '本月结存': 16566, 'areaUsage': 1000, 'prevDamage': 10, '品质异常': 6, '三码全无': 4, '单实不符': 4, 'todayDamage': 9 }
+},
         上虞: { '上月结存': 0, receiveTotal: 0, '转正量': 0, '待转正量': 0, '京东呆滞退': 0, '京东在途退': 0, '菜鸟呆滞退': 0, '菜鸟在途退': 0, '2C呆滞退': 0, '2C在途退': 0, '经销商退': 0, 'KA退': 0, '换包量': 0, '本月结存': 0, areaUsage: 0 },
         佛山: { '上月结存': 0, receiveTotal: 7510, '转正量': 7380, '待转正量': 130, '京东呆滞退': 0, '京东在途退': 0, '菜鸟呆滞退': 0, '菜鸟在途退': 0, '2C呆滞退': 0, '2C在途退': 0, '经销商退': 0, 'KA退': 0, '换包量': 15, '本月结存': 0, areaUsage: 2800 },
         济南: { '上月结存': 0, receiveTotal: 6820, '转正量': 6700, '待转正量': 120, '京东呆滞退': 0, '京东在途退': 0, '菜鸟呆滞退': 0, '菜鸟在途退': 0, '2C呆滞退': 0, '2C在途退': 0, '经销商退': 0, 'KA退': 0, '换包量': 18, '本月结存': 0, areaUsage: 2500 }
