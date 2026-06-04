@@ -149,9 +149,7 @@ function refreshMetrics() {
 
 function formatNum(n) {
     if (n === undefined || n === null) return '—';
-    if (n >= 1000000) return (n / 1000000).toFixed(2) + 'M';
-    if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
-    return n.toString();
+    return (n / 10000).toFixed(2) + '万';
 }
 
 function refreshCityCards() {
