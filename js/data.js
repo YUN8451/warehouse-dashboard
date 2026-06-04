@@ -68,6 +68,85 @@ var warehouseData = {
 
 // 已使用真实5月出入库数据（见上文 history 初始化）
 
+function momHtml(value) {
+    if (value === undefined || value === null) return '<span class="mom-value">—</span>';
+    var cls = value >= 0 ? 'up' : 'down';
+    var arrow = value >= 0 ? '&#9650;' : '&#9660;';
+    return '<span class="mom-value ' + cls + '">' + arrow + ' ' + Math.abs(value).toFixed(1) + '%</span>';
+}
+
+function updateMomEl(id, value) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    if (value === undefined || value === null) {
+        el.className = 'mom-value';
+        el.textContent = '—';
+        return;
+    }
+    el.className = 'mom-value ' + (value >= 0 ? 'up' : 'down');
+    el.textContent = (value >= 0 ? '▲ ' : '▼ ') + Math.abs(value).toFixed(1) + '%';
+}
+
+function compareHtml(current, compare, lowerIsBetter) {
+    if (compare === 0) return '<span class="metric-card-badge badge-flat">— 同期对比 N/A</span>';
+    var diff = current - compare;
+    var absPct = compare !== 0 ? Math.abs((diff / compare) * 100).toFixed(1) : '0.0';
+    if (lowerIsBetter) {
+        if (diff < 0) return '<span class="metric-card-badge badge-up">▲ +' + absPct + '%</span>';
+        if (diff > 0) return '<span class="metric-card-badge badge-down">▼ -' + absPct + '%</span>';
+    } else {
+        if (diff > 0) return '<span class="metric-card-badge badge-up">▲ +' + absPct + '%</span>';
+        if (diff < 0) return '<span class="metric-card-badge badge-down">▼ -' + absPct + '%</span>';
+    }
+    return '<span class="metric-card-badge badge-flat">— 持平</span>';
+}
+
+function refreshKPI() {
+    var k = warehouseData.kpi;
+    var el;
+    el = document.getElementById('safetyCount');
+    if (el) el.textContent = k.safety;
+    el = document.getElementById('inboundVolume');
+    if (el) el.textContent = k.inboundVolume;
+    updateMomEl('inboundMoM', k.inboundMoM);
+    el = document.getElementById('inboundCompare');
+    if (el) el.textContent = k.inboundCompare;
+    el = document.getElementById('outboundVolume');
+    if (el) el.textContent = k.outboundVolume;
+    updateMomEl('outboundMoM', k.outboundMoM);
+    el = document.getElementById('outboundCompare');
+    if (el) el.textContent = k.outboundCompare;
+    el = document.getElementById('throughputVolume');
+    if (el) el.textContent = k.throughput;
+    updateMomEl('throughputMoM', k.throughputMoM);
+    el = document.getElementById('throughputCompare');
+    if (el) el.textContent = k.throughputCompare;
+}
+
+function refreshMetrics() {
+    var container = document.getElementById('metricGrid');
+    if (!container) return;
+    var m = warehouseData.metrics;
+    var metricsDef = [
+        { key: 'turnoverDays', title: '实物周转天数', unit: '天', lowerIsBetter: true },
+        { key: 'inventoryAccuracy', title: '库存准确率', unit: '%', lowerIsBetter: false },
+        { key: 'volumeUtilization', title: '容积利用率', unit: '%', lowerIsBetter: false },
+        { key: 'orderExceptionRate', title: '订单异常率', unit: '%', lowerIsBetter: true }
+    ];
+    container.innerHTML = metricsDef.map(function (def) {
+        var d = m[def.key];
+        var valStr = def.key === 'orderExceptionRate' ? (d.current * 100).toFixed(2) : d.current;
+        return '<div class="metric-card">' +
+            '<div class="metric-card-header">' +
+            '<span class="metric-card-title">' + def.title + '</span>' +
+            compareHtml(d.current, d.compare, def.lowerIsBetter) +
+            '</div>' +
+            '<div class="metric-card-value">' + valStr + '<span style="font-size:12px;font-weight:400;margin-left:2px;">' + def.unit + '</span></div>' +
+            '<div class="metric-card-sub">同期: ' + (def.key === 'orderExceptionRate' ? (d.compare * 100).toFixed(2) : d.compare) + ' ' + def.unit + '</div>' +
+            '</div>';
+    }).join('');
+}
+
 function refreshCityCards() {
     var container = document.getElementById('cityCards');
     if (!container) return;
