@@ -147,6 +147,13 @@ function refreshMetrics() {
     }).join('');
 }
 
+function formatNum(n) {
+    if (n === undefined || n === null) return '—';
+    if (n >= 1000000) return (n / 1000000).toFixed(2) + 'M';
+    if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+    return n.toString();
+}
+
 function refreshCityCards() {
     var container = document.getElementById('cityCards');
     if (!container) return;
